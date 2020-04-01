@@ -3,40 +3,25 @@ package dk.codemouse.RweGameEngine.test;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 
 import dk.codemouse.RweGameEngine.GameEngine;
 
-public class TestGame extends GameEngine{
+public class TestSimple extends GameEngine{
 	
 	int x = 5;
 	int y = 5;
+	int mX = 0;
+	int mY = 0;
 	
 	@Override
 	public void onUserCreate() {
-		
-		addMouseMotionListener(new MouseMotionListener() {
 
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				x = GameEngine.MouseX;
-				y = GameEngine.MouseY;
-			}
-			
-		});
 	}
 
 	@Override
 	public void onUserDraw(Graphics2D g) {
 		g.setColor(Color.BLACK);
-		g.drawRect(x, y, 20, 20);
+		g.drawRect(x - 10, y - 10, 20, 20);
 	}
 
 	@Override
@@ -52,7 +37,25 @@ public class TestGame extends GameEngine{
 			
 		if (keyPressed(KeyEvent.VK_UP))
 			y -= 1;
-
+		
+		if (mX != GameEngine.MouseX) {
+			mX = GameEngine.MouseX;
+			x = mX;
+		}
+		
+		if (mY != GameEngine.MouseY) {
+			mY = GameEngine.MouseY;
+			y = mY;
+		}
+	}
+	
+	public static void main(String[] args) {
+		TestSimple game = new TestSimple();
+		if (game.construct(400, 300)) {
+			game.start();
+		} else {
+			System.err.println("Error occured during construction");
+		}
 	}
 
 }
