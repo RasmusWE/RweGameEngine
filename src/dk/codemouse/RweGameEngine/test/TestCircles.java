@@ -1,6 +1,7 @@
 package dk.codemouse.RweGameEngine.test;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -86,8 +87,17 @@ public class TestCircles extends GameEngine {
 				if (SwingUtilities.isRightMouseButton(e)) {
 					if (selectedBall != null) {
 						//Apply velocity
-						selectedBall.vx = 0.05f * ((selectedBall.px) - (float) GameEngine.MouseX);
-						selectedBall.vy = 0.05f * ((selectedBall.py) - (float) GameEngine.MouseY);
+						float xDist = ((selectedBall.px) - (float) GameEngine.MouseX);
+						float yDist = ((selectedBall.py) - (float) GameEngine.MouseY);
+						
+						int maxDist = 200;
+						if (xDist < -maxDist) xDist = -maxDist;
+						if (xDist > maxDist)  xDist = maxDist;
+						if (yDist < -maxDist) yDist = -maxDist;
+						if (yDist > maxDist)  yDist = maxDist;
+
+						selectedBall.vx = 0.05f * xDist;
+						selectedBall.vy = 0.05f * yDist;
 					}
 				}
 				
@@ -153,7 +163,7 @@ public class TestCircles extends GameEngine {
 				}
 			}
 		}
-		
+
 		//Now work out dynamic collisions
 		for (CollidingPair collidingPair : collidingPairs) {
 			Ball b1 = collidingPair.ball1;
@@ -184,6 +194,17 @@ public class TestCircles extends GameEngine {
 			b2.vx = tx * dpTan2 + nx * m2;
 			b2.vy = ty * dpTan2 + ny * m2;
 		}
+		
+		//Reset velocity button
+		if (keyReleased(KeyEvent.VK_SPACE)) {
+			for (Ball ball : balls) {
+				ball.vx = 0;
+				ball.vy = 0;
+				ball.ax = 0;
+				ball.ay = 0;
+			}
+		}
+
 	}
 	
 	@Override
