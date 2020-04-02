@@ -34,7 +34,9 @@ public class TestCircles extends GameEngine {
 		}
 	}
 	
-	Random random = new Random();
+	private Random random = new Random();
+	
+	private float damping = 0.99f;
 	
 	private ArrayList<Ball> balls = new ArrayList<>();
 	private ArrayList<CollidingPair> collidingPairs = new ArrayList<>();
@@ -60,16 +62,16 @@ public class TestCircles extends GameEngine {
 	
 	@Override
 	public void onUserCreate() {
+		//Togle anti aliasing
+		useAntiAliasing(false);
+		
 		//Setup mouse input
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				GameEngine.MouseX = e.getX();
-				GameEngine.MouseY = e.getY();
-				
 				if (selectedBall != null) {
 					if (SwingUtilities.isLeftMouseButton(e)) {
-						selectedBall.px = e.getX();
-						selectedBall.py = e.getY();
+						selectedBall.px = GameEngine.MouseX;
+						selectedBall.py = GameEngine.MouseY;
 					}
 				} else {
 					for (Ball ball : balls) {
@@ -90,7 +92,7 @@ public class TestCircles extends GameEngine {
 						float xDist = ((selectedBall.px) - (float) GameEngine.MouseX);
 						float yDist = ((selectedBall.py) - (float) GameEngine.MouseY);
 						
-						int maxDist = 200;
+						int maxDist = 100;
 						if (xDist < -maxDist) xDist = -maxDist;
 						if (xDist > maxDist)  xDist = maxDist;
 						if (yDist < -maxDist) yDist = -maxDist;
@@ -110,8 +112,8 @@ public class TestCircles extends GameEngine {
 //		addBall(screenWidth() * 0.25f, screenHeight() * 0.5f, defaultRadius);
 //		addBall(screenWidth() * 0.75f, screenHeight() * 0.5f, defaultRadius);
 		
-		for (int i = 0; i < 15; i++) 
-			addBall(random.nextInt(10000) % screenWidth(), random.nextInt(10000) % screenHeight(), random.nextInt(10000) % 86 + 2);
+		for (int i = 0; i < 10; i++) 
+			addBall(random.nextInt(screenWidth()), random.nextInt(screenHeight()), random.nextInt(10000) % 16 + 2);
 	}
 
 	@Override
@@ -189,10 +191,10 @@ public class TestCircles extends GameEngine {
 			float m1 = (dpNorm1 * (b1.mass - b2.mass) + 1.0f * b2.mass * dpNorm2) / (b1.mass + b2.mass);
 			float m2 = (dpNorm2 * (b2.mass - b1.mass) + 1.0f * b1.mass * dpNorm1) / (b1.mass + b2.mass);
 			
-			b1.vx = tx * dpTan1 + nx * m1;
-			b1.vy = ty * dpTan1 + ny * m1;
-			b2.vx = tx * dpTan2 + nx * m2;
-			b2.vy = ty * dpTan2 + ny * m2;
+			b1.vx = (tx * dpTan1 + nx * m1) * damping;
+			b1.vy = (ty * dpTan1 + ny * m1) * damping;
+			b2.vx = (tx * dpTan2 + nx * m2) * damping;
+			b2.vy = (ty * dpTan2 + ny * m2) * damping;
 		}
 		
 		//Reset velocity button
@@ -210,33 +212,34 @@ public class TestCircles extends GameEngine {
 	@Override
 	public void onUserDraw(Graphics2D g) {
 		//Clear screen
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, screenWidth(), screenHeight());
-		
+		clearScreen(g, Color.BLACK);	
 		
 		//Draw balls
-		g.setColor(Color.BLACK);
+		//g.setColor(Color.BLACK);
 		for (Ball ball : balls) {
 			//x and y in drawOval is not the center of the oval but rather the top left point
-			int x = (int) (ball.px - ball.radius);
-			int y = (int) (ball.py - ball.radius);
-			g.drawOval(x, y, (int) ball.radius * 2, (int) ball.radius * 2);
+			//int x = (int) (ball.px - ball.radius);
+			//int y = (int) (ball.py - ball.radius);
+			//g.drawOval(x, y, (int) ball.radius * 2, (int) ball.radius * 2);
+			drawCircle(g, (int) ball.px, (int) ball.py, (int) ball.radius, Color.WHITE);
 		}
 		
 		//Draw collision lines
-		g.setColor(Color.RED);
+		//g.setColor(Color.RED);
 		for (CollidingPair collidingPair : collidingPairs) {
-			g.drawLine((int) collidingPair.ball1.px, (int) collidingPair.ball1.py, (int) collidingPair.ball2.px, (int) collidingPair.ball2.py);
+			//g.drawLine((int) collidingPair.ball1.px, (int) collidingPair.ball1.py, (int) collidingPair.ball2.px, (int) collidingPair.ball2.py);
+			drawLine(g, (int) collidingPair.ball1.px, (int) collidingPair.ball1.py, (int) collidingPair.ball2.px, (int) collidingPair.ball2.py, Color.RED);
 		}
 		
-		//Clear collidingPairs list since we don't have a single update function scope as ONL has
+		//Clear collidingPairs list since we don't have a single update function scope as OneLoneCoder has
 		//so the list is placed in scope of entire CirclesTest class and cleared when the pairs has been used here in draw
 		collidingPairs.clear();
 		
 		//Draw cue
 		if (selectedBall != null) {
-			g.setColor(Color.BLUE);
-			g.drawLine((int) selectedBall.px, (int) selectedBall.py, GameEngine.MouseX, GameEngine.MouseY);
+			//g.setColor(Color.BLUE);
+			//g.drawLine((int) selectedBall.px, (int) selectedBall.py, GameEngine.MouseX, GameEngine.MouseY);
+			drawLine(g, (int) selectedBall.px, (int) selectedBall.py, GameEngine.MouseX, GameEngine.MouseY, Color.BLUE);
 		}
 	}
 	
@@ -250,7 +253,7 @@ public class TestCircles extends GameEngine {
 
 	public static void main(String[] args) {
 		TestCircles circlesTest = new TestCircles();
-		if (circlesTest.construct("Circle Test - OLC", 800, 600)) {
+		if (circlesTest.construct("Circle Test - OLC", 150, 110, 8)) {
 			circlesTest.start();
 		} else {
 			System.err.println("Error constructing engine");

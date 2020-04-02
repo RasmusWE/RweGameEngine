@@ -13,7 +13,9 @@ import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame {
-
+	
+	private String frameTitle;
+	
 	private GameEngine engine;
 	
 	public GameScreen screen;
@@ -23,6 +25,8 @@ public class GameFrame extends JFrame {
 	
 	public GameFrame(GameEngine engine, String title, int width, int height, boolean fullScreen) {
 		super(title);
+		
+		frameTitle = title;
 		
 		this.engine = engine;
 		
@@ -36,6 +40,9 @@ public class GameFrame extends JFrame {
 			
 			frameDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		} else {
+			width *= GameEngine.PIXEL_SIZE;
+			height *= GameEngine.PIXEL_SIZE;
+			
 			frameDimension = new Dimension(width, height);
 		}
 
@@ -69,6 +76,10 @@ public class GameFrame extends JFrame {
 	
 	public void addMouseListener(MouseListener listener) {
 		screen.addMouseListener(listener);
+	}
+	
+	public void setFPS(int fps) {
+		this.setTitle(frameTitle + " - FPS: " + Integer.toString(fps));
 	}
 
 	private void prepareGameScreen() {

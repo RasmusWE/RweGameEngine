@@ -1,5 +1,6 @@
 package dk.codemouse.RweGameEngine;
 
+import java.awt.BasicStroke;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -20,10 +21,15 @@ public class GameScreen extends JPanel {
 		
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent e) {
-				GameEngine.MouseX = e.getX();
-				GameEngine.MouseY = e.getY();
+				GameEngine.MouseX = e.getX() / GameEngine.PIXEL_SIZE;
+				GameEngine.MouseY = e.getY() / GameEngine.PIXEL_SIZE;
 			}
-		});
+			
+			public void mouseDragged(MouseEvent e) {
+				GameEngine.MouseX = e.getX() / GameEngine.PIXEL_SIZE;
+				GameEngine.MouseY = e.getY() / GameEngine.PIXEL_SIZE;
+			}
+		});	
 	}
 
 	public void paintComponent(Graphics g) {
@@ -39,6 +45,8 @@ public class GameScreen extends JPanel {
 		// RenderingHints.VALUE_DITHER_ENABLE);
 
 		g2.setRenderingHints(rh);
+		g2.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		
 		frame.onUserDraw(g2);
 	}
 	

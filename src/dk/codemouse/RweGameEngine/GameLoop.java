@@ -48,7 +48,7 @@ public class GameLoop {
 			if (System.currentTimeMillis() - timer > 1000) {
 				GameEngine.CURRENT_FPS = frames;
 				GameEngine.CURRENT_UPS = ticks;
-
+				
 				frames = 0;
 				ticks = 0;
 				timer += 1000;
@@ -62,6 +62,7 @@ public class GameLoop {
 	
 	private void update() {
 		engine.onUserUpdate();
+		engine.sendFpsToFrame(GameEngine.CURRENT_FPS);
 	}
 
 }
