@@ -1,8 +1,10 @@
 package dk.codemouse.RweGameEngine;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
@@ -36,6 +38,10 @@ public class GameGraphics {
 	
 	public void useAntiAliasing(boolean tof) {
 		useAntiAliasing = tof;
+	}
+	
+	public boolean useAntiAliasing() {
+		return useAntiAliasing;
 	}
 	
 	public void clearScreen(Graphics2D g, Color color) {
@@ -502,7 +508,12 @@ public class GameGraphics {
 		x2 *= GameEngine.PIXEL_SIZE;
 		y2 *= GameEngine.PIXEL_SIZE;
 		
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		
 		g.drawLine(x1, y1, x2, y2);
+		
+		g.setStroke(oldStroke);
 	}
 	
 	private void drawCircleA(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
@@ -516,8 +527,13 @@ public class GameGraphics {
 		int w = (radius * 2) * GameEngine.PIXEL_SIZE;
 		int h = (radius * 2) * GameEngine.PIXEL_SIZE;
 		
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		
 		Ellipse2D ell = new Ellipse2D.Double(x, y, w, h);
 		g.draw(ell);
+		
+		g.setStroke(oldStroke);
 	}
 	
 	private void fillCircleA(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
@@ -546,10 +562,16 @@ public class GameGraphics {
 		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 		rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 		
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		
 		RenderingHints oldrh = g.getRenderingHints();	
-		g.setRenderingHints(rh);		
+		g.setRenderingHints(rh);	
+		
 		g.drawRect(x, y, w, h);
+		
 		g.setRenderingHints(oldrh);
+		g.setStroke(oldStroke);
 	}
 	
 	private void fillRectA(Graphics2D g, int x, int y, int w, int h, Color color) {
@@ -573,8 +595,13 @@ public class GameGraphics {
 		x3 *= GameEngine.PIXEL_SIZE;
 		y3 *= GameEngine.PIXEL_SIZE;
 		
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		
 	    TriangleShape triangleShape = new TriangleShape(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), new Point2D.Double(x3, y3));
 	    g.draw(triangleShape);
+	    
+		g.setStroke(oldStroke);
 	}
 	
 	private void fillTriangleA(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {

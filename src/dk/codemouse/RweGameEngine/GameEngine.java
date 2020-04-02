@@ -15,20 +15,29 @@ import javax.swing.SwingUtilities;
  * 
  * Simply extend this class and implement the onUserCreate, onUserUpdate and onUserDraw to utilize the window and internal game loop.
  * 
- * You can use the standard drawing function in Graphics2D - But you can also use the drawing functions declared in this class.
+ * You are encouraged to use the drawing functions specifically designed for this engine - But you can also use std. functions in Graphics2D.
+ * Not that if you use the std. functions from Graphics2D changing of pixel size will have no effect.
  * 
- * Note if you increase the pixelsize of the engine (as you can in OneLoneCoders pixel engine)
- * you HAVE to use the specially designed functions for drawing from this class, for the changed pixel size to have an effect on the drawing.
- * 
- * Note if you change pixelsize the width and height is also affected as you choose a width of n pixels and height of n pixel.
+ * Note if you change pixel size the default behaviour is that the width and height is affected as you choose a width of n pixels and height of n pixels.
+ * You can choose not to have this behaviour by specifying "fitScreenToPixel = false" in the "construct" function.
+ * This will make it so the width and height you specify is in normal screen pixel dimensions (Everything else still behaves with specified pixel size).
  * 
  * Note that the original OlcPixelGameEngine uses no anti-aliasing and the default behavior in this engine is also emulating this
- * though you can turn on anti-aliasing with "useAntiAliasing(boolean toggle)"
+ * though you can turn on anti-aliasing with "useAntiAliasing(boolean toggle)". 
  * 
- * Mouse position and key controls available out-of-the-box. Easily add custom listeners or access JFrame and JPanel screen directly.
+ * Mouse position and key controls are available out-of-the-box. Easily add custom listeners.
+ * Access mouse position with GameEngine.MouseX, GameEngine.MouseY.
+ * Easily add key controls like so:
+ * 
+ *		if (keyReleased(KeyEvent.VK_ESCAPE)) {
+ *			System.exit(0);
+ *		}
+ * 
+ * Access JFrame and JPanel screen directly to do this. For example you can also change frame properties like so: 
+ * frame.setResizable(false);
  * 
  * @author Rasmus Wehlast Engelbrecht
- * @version 1.1
+ * @version 1.2
  * 
  */
 
@@ -57,7 +66,7 @@ public abstract class GameEngine {
 	private MouseListener customMouseListener;
 	private MouseMotionListener customMouseMotionListener;
 	
-	private boolean constructed = false;
+	private boolean constructed = false, fitScreenToPixel = true;
 
 	public int screenWidth() {
 		return frame.frameDimension.width / GameEngine.PIXEL_SIZE;
@@ -111,6 +120,12 @@ public abstract class GameEngine {
 		return doConstruct(width, height, pixelSize);
 	}
 	
+	public boolean construct(int width, int height, int pixelSize, boolean fitScreenToPixel) {
+		this.fitScreenToPixel = fitScreenToPixel;
+		
+		return doConstruct(width, height, pixelSize);
+	}
+	
 	public boolean construct(String title, int width, int height) {
 		this.title = title;
 		
@@ -119,6 +134,13 @@ public abstract class GameEngine {
 	
 	public boolean construct(String title, int width, int height, int pixelSize) {
 		this.title = title;
+		
+		return doConstruct(width, height, pixelSize);
+	}
+	
+	public boolean construct(String title, int width, int height, int pixelSize, boolean fitScreenToPixel) {
+		this.title = title;
+		this.fitScreenToPixel = fitScreenToPixel;
 		
 		return doConstruct(width, height, pixelSize);
 	}
@@ -162,6 +184,10 @@ public abstract class GameEngine {
 	public abstract void onUserUpdate();
 	
 	public abstract void onUserDraw(Graphics2D g);
+	
+	public boolean useAntiAliasing() {
+		return gameGraphics.useAntiAliasing();
+	}
 	
 	public void useAntiAliasing(boolean tof) {
 		gameGraphics.useAntiAliasing(tof);
@@ -214,7 +240,7 @@ public abstract class GameEngine {
 		GameEngine.PIXEL_SIZE = pixelSize > 1 ? pixelSize:1;
 
 		try {			
-			frame = new GameFrame(this, title, width, height, fullScreen);		
+			frame = new GameFrame(this, title, width, height, fullScreen, fitScreenToPixel);		
 			gameGraphics = new GameGraphics(this, pixelSize, fullScreen);
 			
 			onUserCreate();

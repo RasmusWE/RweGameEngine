@@ -2,6 +2,7 @@ package dk.codemouse.RweGameEngine.test;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import dk.codemouse.RweGameEngine.GameEngine;
 
@@ -11,7 +12,8 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public void onUserCreate() {
-		//useAntiAliasing(true);
+		useAntiAliasing(true);
+		frame.setResizable(true);
 	}
 
 	@Override
@@ -20,6 +22,11 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 			i++;
 		else
 			i = 0;
+		
+		//Exit
+		if (keyReleased(KeyEvent.VK_ESCAPE)) {
+			System.exit(0);
+		}
 	}
 
 	@Override

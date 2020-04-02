@@ -3,6 +3,7 @@ package dk.codemouse.RweGameEngine;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -14,16 +15,17 @@ import javax.swing.JFrame;
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame {
 	
+	public GameScreen screen;
+
+	public Dimension frameDimension;
+	public Insets insets;
+	public boolean fullScreen;
+	
 	private String frameTitle;
 	
 	private GameEngine engine;
 	
-	public GameScreen screen;
-
-	public Dimension frameDimension;
-	public boolean fullScreen;
-	
-	public GameFrame(GameEngine engine, String title, int width, int height, boolean fullScreen) {
+	public GameFrame(GameEngine engine, String title, int width, int height, boolean fullScreen, boolean fitScreenToPixel) {
 		super(title);
 		
 		frameTitle = title;
@@ -40,8 +42,10 @@ public class GameFrame extends JFrame {
 			
 			frameDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		} else {
-			width *= GameEngine.PIXEL_SIZE;
-			height *= GameEngine.PIXEL_SIZE;
+			if (fitScreenToPixel) {
+				width *= GameEngine.PIXEL_SIZE;
+				height *= GameEngine.PIXEL_SIZE;
+			}
 			
 			frameDimension = new Dimension(width, height);
 		}
@@ -50,7 +54,9 @@ public class GameFrame extends JFrame {
 		
 		this.pack();
 		this.setLocationRelativeTo(null);
-
+		
+		insets = this.getInsets();
+		
 		this.getContentPane().addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
 				resizeWindow(e.getComponent().getWidth(), e.getComponent().getHeight());
@@ -82,14 +88,17 @@ public class GameFrame extends JFrame {
 		this.setTitle(frameTitle + " - FPS: " + Integer.toString(fps));
 	}
 
-	private void prepareGameScreen() {
-		screen = new GameScreen(this);
-		add(screen);
+	public boolean useAntiAliasing() {
+		return engine.useAntiAliasing();
 	}
-
+	
 	public void resizeWindow(int width, int height) {
 		screen.resizeWindow(width, height);
 		this.pack();
-		this.setLocationRelativeTo(null);
+	}
+	
+	private void prepareGameScreen() {
+		screen = new GameScreen(this);
+		add(screen);
 	}
 }

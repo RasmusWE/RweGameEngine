@@ -16,6 +16,7 @@ public class TestSimple extends GameEngine{
 	@Override
 	public void onUserCreate() {
 		useAntiAliasing(true);
+		frame.setResizable(true);
 	}
 
 	@Override
@@ -47,11 +48,16 @@ public class TestSimple extends GameEngine{
 			mY = GameEngine.MouseY;
 			y = mY;
 		}
+		
+		//Exit
+		if (keyReleased(KeyEvent.VK_ESCAPE)) {
+			System.exit(0);
+		}
 	}
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(100, 75, 3)) {
+		if (game.construct(125, 75, 3)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");

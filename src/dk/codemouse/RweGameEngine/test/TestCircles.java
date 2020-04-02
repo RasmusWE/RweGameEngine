@@ -64,6 +64,7 @@ public class TestCircles extends GameEngine {
 	public void onUserCreate() {
 		//Togle anti aliasing
 		useAntiAliasing(false);
+		//frame.setResizable(true);
 		
 		//Setup mouse input
 		addMouseMotionListener(new MouseMotionAdapter() {
@@ -113,7 +114,7 @@ public class TestCircles extends GameEngine {
 //		addBall(screenWidth() * 0.75f, screenHeight() * 0.5f, defaultRadius);
 		
 		for (int i = 0; i < 10; i++) 
-			addBall(random.nextInt(screenWidth() - 20) + 20, random.nextInt(screenHeight() - 20) + 20, random.nextInt(10000) % 32 + 2);
+			addBall(random.nextInt(screenWidth() - 40) + 10, random.nextInt(screenHeight() - 40) + 10, random.nextInt(10000) % 20 + 2);
 	}
 
 	@Override
@@ -213,6 +214,11 @@ public class TestCircles extends GameEngine {
 				ball.ay = 0;
 			}
 		}
+		
+		//Exit
+		if (keyReleased(KeyEvent.VK_ESCAPE)) {
+			System.exit(0);
+		}
 
 	}
 	
@@ -260,7 +266,7 @@ public class TestCircles extends GameEngine {
 
 	public static void main(String[] args) {
 		TestCircles circlesTest = new TestCircles();
-		if (circlesTest.construct("Circle Test - OLC", 8)) {
+		if (circlesTest.construct("Circle Test - OLC", 160, 110, 8)) {
 			circlesTest.start();
 		} else {
 			System.err.println("Error constructing engine");
