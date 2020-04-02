@@ -39,7 +39,6 @@ public abstract class GameEngine {
 	protected GameFrame frame;
 
 	public static int PIXEL_SIZE = 1;
-	public GameGraphics gameGraphics;
 	
 	public static int TFPS = 60; //Target FPS (FPS CAP)
 	public static int TUPS = 60;  //Target Updates - lowering or increasing this will make the engine update logic more or less often
@@ -53,6 +52,7 @@ public abstract class GameEngine {
 	public GameKeys keys = new GameKeys();
 	
 	private GameLoop loop;
+	private GameGraphics gameGraphics;
 	
 	private MouseListener customMouseListener;
 	private MouseMotionListener customMouseMotionListener;
