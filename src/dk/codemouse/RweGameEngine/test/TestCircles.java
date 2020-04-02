@@ -36,7 +36,7 @@ public class TestCircles extends GameEngine {
 	
 	private Random random = new Random();
 	
-	private float damping = 0.99f;
+	private float damping = 1.0f;
 	
 	private ArrayList<Ball> balls = new ArrayList<>();
 	private ArrayList<CollidingPair> collidingPairs = new ArrayList<>();
@@ -63,7 +63,7 @@ public class TestCircles extends GameEngine {
 	@Override
 	public void onUserCreate() {
 		//Togle anti aliasing
-		useAntiAliasing(false);
+		useAntiAliasing(true);
 		
 		//Setup mouse input
 		addMouseMotionListener(new MouseMotionAdapter() {
@@ -113,7 +113,7 @@ public class TestCircles extends GameEngine {
 //		addBall(screenWidth() * 0.75f, screenHeight() * 0.5f, defaultRadius);
 		
 		for (int i = 0; i < 10; i++) 
-			addBall(random.nextInt(screenWidth()), random.nextInt(screenHeight()), random.nextInt(10000) % 16 + 2);
+			addBall(random.nextInt(screenWidth() - 20) + 20, random.nextInt(screenHeight() - 20) + 20, random.nextInt(10000) % 32 + 2);
 	}
 
 	@Override
@@ -128,10 +128,17 @@ public class TestCircles extends GameEngine {
 			ball.px += ball.vx;
 			ball.py += ball.vy;
 			
-			if (ball.px < 0) ball.px += (float) screenWidth();
-			if (ball.px > screenWidth()) ball.px -= (float) screenWidth();
-			if (ball.py < 0) ball.py += (float) screenHeight();
-			if (ball.py >= screenHeight()) ball.py -= (float) screenHeight();
+//			Balls reappear on opposite side of exit place of screen		
+//			if (ball.px < 0) ball.px += (float) screenWidth();
+//			if (ball.px > screenWidth()) ball.px -= (float) screenWidth();
+//			if (ball.py < 0) ball.py += (float) screenHeight();
+//			if (ball.py >= screenHeight()) ball.py -= (float) screenHeight();
+			
+//			Balls bounce of walls
+			if (ball.px - ball.radius < 0) ball.vx = -ball.vx;
+			if (ball.px + ball.radius > screenWidth()) ball.vx = -ball.vx;
+			if (ball.py - ball.radius < 0) ball.vy = -ball.vy;
+			if (ball.py + ball.radius >= screenHeight()) ball.vy = -ball.vy;
 			
 			if (Math.abs(ball.vx * ball.vx + ball.vy * ball.vy) < 0.1f) {
 				ball.vx = 0;
@@ -215,7 +222,7 @@ public class TestCircles extends GameEngine {
 		clearScreen(g, Color.BLACK);	
 		
 		//Draw balls
-		//g.setColor(Color.BLACK);
+		//g.setColor(Color.WHITE);
 		for (Ball ball : balls) {
 			//x and y in drawOval is not the center of the oval but rather the top left point
 			//int x = (int) (ball.px - ball.radius);
@@ -253,7 +260,7 @@ public class TestCircles extends GameEngine {
 
 	public static void main(String[] args) {
 		TestCircles circlesTest = new TestCircles();
-		if (circlesTest.construct("Circle Test - OLC", 150, 110, 8)) {
+		if (circlesTest.construct("Circle Test - OLC", 8)) {
 			circlesTest.start();
 		} else {
 			System.err.println("Error constructing engine");
