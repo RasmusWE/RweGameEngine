@@ -8,20 +8,20 @@ import dk.codemouse.RweGameEngine.GameEngine;
 
 public class TestSimple extends GameEngine{
 	
-	int x = 5;
-	int y = 5;
+	int x = 10;
+	int y = 10;
 	int mX = 0;
 	int mY = 0;
 	
 	@Override
 	public void onUserCreate() {
-
+		useAntiAliasing(true);
 	}
 
 	@Override
 	public void onUserDraw(Graphics2D g) {
-		g.setColor(Color.BLACK);
-		g.drawRect(x - 10, y - 10, 20, 20);
+		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
+		drawCircle(g, x, y, 10, Color.BLACK);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class TestSimple extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(400, 300)) {
+		if (game.construct(100, 75, 3)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");

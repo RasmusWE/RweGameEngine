@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
  * Many of these drawing functions related to drawing with increased pixel size are kindly borrowed 
  * from Barista's java implementation of OlcPixelGameEngine and the OlcPixelGameEngine itself
  * 
- * Though the functions that implements anti aliasing are my own implementation
+ * Though the functions that implements anti aliasing are my own implementation.
  * 
  * TODO: Sprite handling
  * 

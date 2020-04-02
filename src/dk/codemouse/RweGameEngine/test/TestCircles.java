@@ -63,7 +63,7 @@ public class TestCircles extends GameEngine {
 	@Override
 	public void onUserCreate() {
 		//Togle anti aliasing
-		useAntiAliasing(true);
+		useAntiAliasing(false);
 		
 		//Setup mouse input
 		addMouseMotionListener(new MouseMotionAdapter() {
