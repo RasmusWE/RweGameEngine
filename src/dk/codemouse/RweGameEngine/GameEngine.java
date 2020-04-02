@@ -41,8 +41,8 @@ public abstract class GameEngine {
 	public static int PIXEL_SIZE = 1;
 	public GameGraphics gameGraphics;
 	
-	public static int TFPS = 60;
-	public static int TUPS = 60;
+	public static int TFPS = 60; //Target FPS (FPS CAP)
+	public static int TUPS = 60;  //Target Updates - lowering or increasing this will make the engine update logic more or less often
 	public static int CURRENT_FPS  = 0;
 	public static int CURRENT_UPS  = 0;
 	

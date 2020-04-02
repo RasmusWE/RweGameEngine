@@ -29,7 +29,7 @@ public class GameGraphics {
 		this.engine = engine;
 
 		if (pixelSize > 1 && fullScreen) {
-			pixelSize = findNearestDivisible(engine.screenWidth(), engine.screenHeight(), pixelSize);
+			pixelSize = findNearestDivisible(engine.frame.frameDimension.width, engine.frame.frameDimension.height, pixelSize);
 			GameEngine.PIXEL_SIZE = pixelSize;
 		}
 	}
