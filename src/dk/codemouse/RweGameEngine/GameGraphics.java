@@ -2,6 +2,7 @@ package dk.codemouse.RweGameEngine;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
@@ -25,6 +26,9 @@ import java.awt.geom.Point2D;
 public class GameGraphics {
 	
 	private GameEngine engine;
+	
+	private Font font;
+	
 	private boolean useAntiAliasing = false;
 	
 	public GameGraphics(GameEngine engine, int pixelSize, boolean fullScreen) {
@@ -34,6 +38,8 @@ public class GameGraphics {
 			pixelSize = findNearestDivisible(engine.frame.frameDimension.width, engine.frame.frameDimension.height, pixelSize);
 			GameEngine.PIXEL_SIZE = pixelSize;
 		}
+		
+		font = new Font(Font.MONOSPACED, Font.PLAIN, (int)(GameEngine.PIXEL_SIZE * 20));
 	}
 	
 	public void useAntiAliasing(boolean tof) {
@@ -465,6 +471,31 @@ public class GameGraphics {
 				drawLine(g, x, yIncr, x2, yIncr, color);
 				yIncr += 1;
 			}
+		}
+	}
+	
+	public void setFont(Font font) {
+		this.font = font;
+		this.font = font.deriveFont((float) font.getSize() * GameEngine.PIXEL_SIZE);
+	}
+	
+	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
+		x = (x * GameEngine.PIXEL_SIZE) - (GameEngine.PIXEL_SIZE + 1);
+		y = (y * GameEngine.PIXEL_SIZE) - (GameEngine.PIXEL_SIZE + 1);
+		
+		g.setColor(color);
+		g.setFont(font);
+		
+		if (useAntiAliasing) {
+			g.drawString(string, x, y);
+		} else {		
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+
+			RenderingHints oldrh = g.getRenderingHints();	
+			g.setRenderingHints(rh);
+			g.drawString(string, x, y);
+			g.setRenderingHints(oldrh);
 		}
 	}
 	

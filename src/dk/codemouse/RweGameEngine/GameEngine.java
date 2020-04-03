@@ -2,6 +2,7 @@
 package dk.codemouse.RweGameEngine;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -227,6 +228,14 @@ public abstract class GameEngine {
 	
 	public void fillRect(Graphics2D g, int x, int y, int w, int h, Color color) {
 		gameGraphics.fillRect(g, x, y, w, h, color);
+	}
+	
+	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
+		gameGraphics.drawString(g, string, x, y, color);
+	}
+	
+	public void setFont(Font font) {
+		gameGraphics.setFont(font);
 	}
 	
 	private boolean doConstruct(int width, int height, int pixelSize) {

@@ -15,14 +15,30 @@ public class TestSimple extends GameEngine{
 	
 	@Override
 	public void onUserCreate() {
-		useAntiAliasing(true);
+		useAntiAliasing(false);
 		frame.setResizable(true);
+		
+		//setFont(new Font("TimesRoman", Font.PLAIN, 20));
 	}
 
 	@Override
 	public void onUserDraw(Graphics2D g) {
 		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
 		drawCircle(g, x, y, 10, Color.BLACK);
+
+		drawString(g, "Hello world!", 1, 20, Color.BLACK);
+		
+		draw(g, 0, 0, Color.RED);
+		draw(g, 0, 1, Color.BLUE);
+		draw(g, 0, 2, Color.RED);
+		draw(g, 0, 3, Color.BLUE);
+		draw(g, 0, 4, Color.RED);
+		draw(g, 0, 5, Color.BLUE);
+		draw(g, 0, 6, Color.RED);
+		draw(g, 0, 7, Color.BLUE);
+		draw(g, 0, 8, Color.RED);
+		draw(g, 0, 9, Color.BLUE);
+		draw(g, 0, 10, Color.RED);
 	}
 
 	@Override
@@ -57,7 +73,7 @@ public class TestSimple extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(125, 75, 3)) {
+		if (game.construct(180, 120, 4)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");
