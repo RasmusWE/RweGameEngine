@@ -32,9 +32,9 @@ import javax.swing.SwingUtilities;
  * Access mouse position with GameEngine.MouseX, GameEngine.MouseY.
  * Easily add key controls like so:
  * 
- *		if (keyReleased(KeyEvent.VK_ESCAPE)) {      if (keyPressed(KeyEvent.VK_RIGHT)) {
- *			tryStop();									x++;
- *		}											}
+ *		if (keyReleased(KeyEvent.VK_ESCAPE)) {      if (keyHeld(KeyEvent.VK_RIGHT)) {      	if (keyPressed(KeyEvent.VK_ENTER)) 
+ *			tryStop();									x++;									System.Out.println("ENTER");
+ *		}											}										}
  * 
  * You can also access JFrame and JPanel screen directly. For example you can change frame properties like so: 
  * frame.setResizable(false);
@@ -87,18 +87,26 @@ public abstract class GameEngine {
 		return frame.frameDimension.height / GameEngine.PIXEL_SIZE;
 	}
 	
-	public boolean keyReleased(int keyCode) {
-		Object released = keys.keyReleased.get(keyCode);
-		if (released != null)
-			return (boolean) released;
-		
-		return false;
-	}
-	
 	public boolean keyPressed(int keyCode) {
 		Object pressed = keys.keyPressed.get(keyCode);
 		if (pressed != null)
 			return (boolean) pressed;
+		
+		return false;
+	}
+	
+	public boolean keyHeld(int keyCode) {
+		Object held = keys.keyHeld.get(keyCode);
+		if (held != null)
+			return (boolean) held;
+		
+		return false;
+	}
+	
+	public boolean keyReleased(int keyCode) {
+		Object released = keys.keyReleased.get(keyCode);
+		if (released != null)
+			return (boolean) released;
 		
 		return false;
 	}

@@ -43,17 +43,20 @@ public class TestSimple extends GameEngine{
 
 	@Override
 	public void onUpdate(double et, double t) {
-		if (keyPressed(KeyEvent.VK_RIGHT))
+		if (keyHeld(KeyEvent.VK_RIGHT))
 			x += 1;
 		
-		if (keyPressed(KeyEvent.VK_LEFT))
+		if (keyHeld(KeyEvent.VK_LEFT))
 			x -= 1;
 		
-		if (keyPressed(KeyEvent.VK_DOWN))
+		if (keyHeld(KeyEvent.VK_DOWN))
 			y += 1;
 			
-		if (keyPressed(KeyEvent.VK_UP))
+		if (keyHeld(KeyEvent.VK_UP))
 			y -= 1;
+		
+		if (keyPressed(KeyEvent.VK_ENTER)) 
+			System.out.println("PRESSED ENTER!");
 		
 		if (mX != GameEngine.MouseX) {
 			mX = GameEngine.MouseX;
