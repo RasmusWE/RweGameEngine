@@ -1,22 +1,34 @@
 package dk.codemouse.RweGameEngine;
 
+import java.time.Duration;
+import java.time.LocalTime;
+
 public class GameLoop {
 
-	private boolean loopRunning = true;
-
+	private volatile boolean running;
 	private int ticks, frames;
+	private double t = 0.0;
+	private final double MAX_DT = 1 / 60.0;
 
 	private GameEngine engine;
+	private Thread loopThread;
 	
 	public GameLoop(GameEngine engine) {
 		this.engine = engine;
 	}
 	
 	public void start() {
-		new Thread(() -> gameLoop()).start();
+		loopThread = new Thread(() -> gameLoop());
+		loopThread.start();
+	}
+	
+	public void stop() {
+		running = false;
 	}
 
 	private void gameLoop() {
+		running = true;
+		
 		frames = 0;
 		ticks = 0;
 
@@ -24,23 +36,33 @@ public class GameLoop {
 		final double timeU = 1000000000 / GameEngine.TUPS;
 		final double timeF = 1000000000 / GameEngine.TFPS;
 		double deltaU = 0, deltaF = 0;
-		long timer = System.currentTimeMillis();
-
-		while (loopRunning) {
+		
+		long timer  = System.currentTimeMillis();
+		LocalTime time = LocalTime.now();
+		
+		while (running) {
 			long currentTime = System.nanoTime();
 			deltaU += (currentTime - initialTime) / timeU;
 			deltaF += (currentTime - initialTime) / timeF;
 			initialTime = currentTime;
 
 			if (deltaU >= 1) {
-				update();
+				LocalTime timeNow = LocalTime.now();
+				Duration elapsed = Duration.between(time, timeNow);
+				double elapsedSeconds = (double) elapsed.toMillis() / 1000;
+				time = timeNow;
+
+				double currDt = Math.min(elapsedSeconds, MAX_DT);
+				
+				t += currDt;
+				update(currDt);
 				input();
 				ticks++;
 				deltaU--;
 			}
 
 			if (deltaF >= 1) {
-				engine.render();
+				render();
 				frames++;
 				deltaF--;
 			}
@@ -60,9 +82,13 @@ public class GameLoop {
 		engine.keys.resetKeys();
 	}
 	
-	private void update() {
-		engine.onUserUpdate();
+	private synchronized void update(double elapsedTime) {
+		engine.onUpdate(elapsedTime, t);
 		engine.sendFpsToFrame(GameEngine.CURRENT_FPS);
+	}
+	
+	private synchronized void render() {
+		engine.render();
 	}
 
 }

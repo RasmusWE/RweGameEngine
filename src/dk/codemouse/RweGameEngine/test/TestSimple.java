@@ -14,7 +14,7 @@ public class TestSimple extends GameEngine{
 	int mY = 0;
 	
 	@Override
-	public void onUserCreate() {
+	public void onCreate() {
 		useAntiAliasing(false);
 		frame.setResizable(true);
 		
@@ -22,7 +22,7 @@ public class TestSimple extends GameEngine{
 	}
 
 	@Override
-	public void onUserDraw(Graphics2D g) {
+	public void onDraw(Graphics2D g) {
 		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
 		drawCircle(g, x, y, 10, Color.BLACK);
 
@@ -42,7 +42,7 @@ public class TestSimple extends GameEngine{
 	}
 
 	@Override
-	public void onUserUpdate() {
+	public void onUpdate(double et, double t) {
 		if (keyPressed(KeyEvent.VK_RIGHT))
 			x += 1;
 		
@@ -69,6 +69,10 @@ public class TestSimple extends GameEngine{
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
 			System.exit(0);
 		}
+	}
+	
+	public boolean onDestroy() {
+		return false;
 	}
 	
 	public static void main(String[] args) {

@@ -6,7 +6,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.SwingUtilities;
 
@@ -22,6 +21,23 @@ public class TestCircles extends GameEngine {
 		float mass;
 		
 		int id;
+		
+		public void fall() {
+			if (py + radius < screenHeight() - 1 && this != selectedBall) {
+				ay = ay + GRAVITY;
+				if (ay > TERM_VEL)
+					ay = TERM_VEL;
+				
+				vy += ay;	
+			}
+		}
+		
+		public void resetAcc() {
+			vx = 0;
+			vy = 0;
+			ax = 0;
+			ay = 0;
+		}
 	}
 	
 	class CollidingPair {
@@ -34,9 +50,9 @@ public class TestCircles extends GameEngine {
 		}
 	}
 	
-	private Random random = new Random();
-	
-	private float damping = 1.0f;
+	private final float GRAVITY = 0.8f;
+	private final float TERM_VEL = GRAVITY * 15;
+	private final float DAMPING = 0.95f;
 	
 	private ArrayList<Ball> balls = new ArrayList<>();
 	private ArrayList<CollidingPair> collidingPairs = new ArrayList<>();
@@ -61,7 +77,7 @@ public class TestCircles extends GameEngine {
 	}
 	
 	@Override
-	public void onUserCreate() {
+	public void onCreate() {
 		//Togle anti aliasing
 		//useAntiAliasing(true);
 		//frame.setResizable(true);
@@ -78,6 +94,7 @@ public class TestCircles extends GameEngine {
 					for (Ball ball : balls) {
 						if (isPointInCircle(ball.px, ball.py, ball.radius, GameEngine.MouseX, GameEngine.MouseY)) {
 							selectedBall = ball;
+							selectedBall.resetAcc();
 							break;
 						}
 					}	
@@ -113,15 +130,14 @@ public class TestCircles extends GameEngine {
 //		addBall(screenWidth() * 0.25f, screenHeight() * 0.5f, defaultRadius);
 //		addBall(screenWidth() * 0.75f, screenHeight() * 0.5f, defaultRadius);
 		
-		for (int i = 0; i < 10; i++) 
-			addBall(random.nextInt(10000) % screenWidth(), random.nextInt(10000) % screenHeight(), 12 * random.nextFloat() + 2);
+		for (int i = 0; i < 5; i++) 
+			addBall(random.nextInt(10000) % screenWidth(), random.nextInt(10000) % screenHeight(), random.nextInt(10000) % 10 + 5);
 	}
 
 	@Override
-	public void onUserUpdate() {
+	public void onUpdate(double et, double t) {
 		//Update ball positions
 		for (Ball ball : balls) {
-			
 			ball.ax = -ball.vx * 0.008f;
 			ball.ay = -ball.vy * 0.008f;
 			ball.vx += ball.ax;
@@ -136,12 +152,12 @@ public class TestCircles extends GameEngine {
 //			if (ball.py >= screenHeight()) ball.py -= (float) screenHeight();
 			
 //			Balls bounce of walls
-			if (ball.px - ball.radius < 0) ball.vx = -ball.vx;
-			if (ball.px + ball.radius > screenWidth()) ball.vx = -ball.vx;
-			if (ball.py - ball.radius < 0) ball.vy = -ball.vy;
-			if (ball.py + ball.radius >= screenHeight()) ball.vy = -ball.vy;
+			if (ball.px - ball.radius < 0) ball.vx = -(ball.vx * DAMPING);
+			if (ball.px + ball.radius > screenWidth()) ball.vx = -(ball.vx * DAMPING);
+			if (ball.py - ball.radius < 0) ball.vy = -(ball.vy * DAMPING);
+			if (ball.py + ball.radius >= screenHeight()) ball.vy = -(ball.vy * DAMPING);
 			
-			if (Math.abs(ball.vx * ball.vx + ball.vy * ball.vy) < 0.1f) {
+			if (Math.abs(ball.vx * ball.vx + ball.vy * ball.vy) < 0.05f) {
 				ball.vx = 0;
 				ball.vy = 0;
 			}
@@ -199,10 +215,10 @@ public class TestCircles extends GameEngine {
 			float m1 = (dpNorm1 * (b1.mass - b2.mass) + 1.0f * b2.mass * dpNorm2) / (b1.mass + b2.mass);
 			float m2 = (dpNorm2 * (b2.mass - b1.mass) + 1.0f * b1.mass * dpNorm1) / (b1.mass + b2.mass);
 			
-			b1.vx = (tx * dpTan1 + nx * m1) * damping;
-			b1.vy = (ty * dpTan1 + ny * m1) * damping;
-			b2.vx = (tx * dpTan2 + nx * m2) * damping;
-			b2.vy = (ty * dpTan2 + ny * m2) * damping;
+			b1.vx = (tx * dpTan1 + nx * m1);
+			b1.vy = (ty * dpTan1 + ny * m1);
+			b2.vx = (tx * dpTan2 + nx * m2);
+			b2.vy = (ty * dpTan2 + ny * m2);
 		}
 		
 		//Reset velocity button
@@ -223,7 +239,7 @@ public class TestCircles extends GameEngine {
 	}
 	
 	@Override
-	public void onUserDraw(Graphics2D g) {
+	public void onDraw(Graphics2D g) {
 		//Clear screen
 		clearScreen(g, Color.BLACK);	
 		
@@ -256,6 +272,11 @@ public class TestCircles extends GameEngine {
 		}
 	}
 	
+	@Override
+	public boolean onDestroy() {
+		return false;
+	}
+	
 	private boolean doCirclesOverlap(float x1, float y1, float r1, float x2, float y2, float r2) {
 		return Math.abs((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)) <= (r1 + r2) * (r1 + r2);	
 	}
@@ -266,7 +287,7 @@ public class TestCircles extends GameEngine {
 
 	public static void main(String[] args) {
 		TestCircles circlesTest = new TestCircles();
-		if (circlesTest.construct("Circle Test - OLC", 150, 100, 8)) {
+		if (circlesTest.construct("Circle Test - OLC", 170, 120, 5)) {
 			circlesTest.start();
 		} else {
 			System.err.println("Error constructing engine");

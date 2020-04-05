@@ -25,8 +25,7 @@ import java.awt.geom.Point2D;
 
 public class GameGraphics {
 	
-	private GameEngine engine;
-	
+	private GameEngine engine;	
 	private Font font;
 	
 	private boolean useAntiAliasing = false;
@@ -70,63 +69,64 @@ public class GameGraphics {
 	}
 	
 	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
-		if (useAntiAliasing) {
-			drawLineA(g, x1, y1, x2, y2, color);
+		// bresenham's line algorithm
+		double deltaX = x2 - x1;
+		if (deltaX == 0) {
+			drawVertLine(g, x1, y1, y2, color);
 		} else {
-			// bresenham's line algorithm
-			double deltaX = x2 - x1;
-			if (deltaX == 0) {
-				drawVertLine(g, x1, y1, y2, color);
+			int xSign = 1;
+			if (deltaX < 0) {
+				xSign = -1;
+			}
+			double deltaY = y2 - y1;
+			if (deltaY == 0) {
+				drawHorizLine(g, x1, x2, y1, color);
 			} else {
-				int xSign = 1;
-				if (deltaX < 0) {
-					xSign = -1;
+				if (useAntiAliasing) {
+					drawLineA(g, x1, y1, x2, y2, color);
+					return;
 				}
-				double deltaY = y2 - y1;
-				if (deltaY == 0) {
-					drawHorizLine(g, x1, x2, y1, color);
+				
+				int ySign = 1;
+				if (deltaY < 0) {
+					ySign = -1;
+				}
+				double deltaXErr = Math.abs(deltaX / deltaY);
+				double xError = 0;
+				double deltaYErr = Math.abs(deltaY / deltaX);
+				double yError = 0;
+				int y = y1;
+				if (deltaX >= 0) {
+					for (int i = x1; i <= x2;) {
+						draw(g, i, y, color);
+						xError += deltaXErr;
+						if (xError >= 0.5) {
+							i += xSign;
+							xError -= 1;
+						}
+						yError += deltaYErr;
+						if (yError >= 0.5) {
+							y += ySign;
+							yError -= 1;
+						}
+					}
 				} else {
-					int ySign = 1;
-					if (deltaY < 0) {
-						ySign = -1;
-					}
-					double deltaXErr = Math.abs(deltaX / deltaY);
-					double xError = 0;
-					double deltaYErr = Math.abs(deltaY / deltaX);
-					double yError = 0;
-					int y = y1;
-					if (deltaX >= 0) {
-						for (int i = x1; i <= x2;) {
-							draw(g, i, y, color);
-							xError += deltaXErr;
-							if (xError >= 0.5) {
-								i += xSign;
-								xError -= 1;
-							}
-							yError += deltaYErr;
-							if (yError >= 0.5) {
-								y += ySign;
-								yError -= 1;
-							}
+					for (int i = x1; i >= x2;) {
+						draw(g, i, y, color);
+						xError += deltaXErr;
+						if (xError >= 0.5) {
+							i += xSign;
+							xError -= 1;
 						}
-					} else {
-						for (int i = x1; i >= x2;) {
-							draw(g, i, y, color);
-							xError += deltaXErr;
-							if (xError >= 0.5) {
-								i += xSign;
-								xError -= 1;
-							}
-							yError += deltaYErr;
-							if (yError >= 0.5) {
-								y += ySign;
-								yError -= 1;
-							}
+						yError += deltaYErr;
+						if (yError >= 0.5) {
+							y += ySign;
+							yError -= 1;
 						}
 					}
 				}
-			}	
-		}
+			}
+		}	
 	}
 	
 	public void drawTriangle(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
@@ -449,14 +449,22 @@ public class GameGraphics {
 	}
 	
 	public void drawRect(Graphics2D g, int x, int y, int w, int h, Color color) {
+		RenderingHints oldrh = null;
 		if (useAntiAliasing) {
-			drawRectA(g, x, y, w, h, color);	
-		} else {
-			drawLine(g, x, y, x + w, y, color);
-			drawLine(g, x + w, y, x + w, y + h, color);
-			drawLine(g, x + w, y + h, x, y + h, color);
-			drawLine(g, x, y + h, x, y, color);
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			
+			oldrh = g.getRenderingHints();	
+			g.setRenderingHints(rh);	
 		}
+		
+		drawLine(g, x, y, x + w, y, color);
+		drawLine(g, x + w, y, x + w, y + h, color);
+		drawLine(g, x + w, y + h, x, y + h, color);
+		drawLine(g, x, y + h, x, y, color);
+			
+		if (useAntiAliasing)
+			g.setRenderingHints(oldrh);
 	}
 	
 	public void fillRect(Graphics2D g, int x, int y, int w, int h, Color color) {
@@ -477,6 +485,10 @@ public class GameGraphics {
 	public void setFont(Font font) {
 		this.font = font;
 		this.font = font.deriveFont((float) font.getSize() * GameEngine.PIXEL_SIZE);
+	}
+	
+	public void setFontSize(float size) {
+		this.font = font.deriveFont(size * GameEngine.PIXEL_SIZE);
 	}
 	
 	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
@@ -500,35 +512,51 @@ public class GameGraphics {
 	}
 	
 	private void drawHorizLine(Graphics2D g, int startX, int endX, int y, Color color) {
+		RenderingHints oldrh = null;
 		if (useAntiAliasing) {
-			drawLineA(g, startX, y, endX, y, color);
-		} else {
-			if (endX - startX >= 0) {
-				for (int i = startX; i <= endX; i++) {
-					draw(g, i, y, color);
-				}
-			} else {
-				for (int i = startX; i >= endX; i--) {
-					draw(g, i, y, color);
-				}
-			}	
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			
+			oldrh = g.getRenderingHints();	
+			g.setRenderingHints(rh);	
 		}
+		
+		if (endX - startX >= 0) {
+			for (int i = startX; i <= endX; i++) {
+				draw(g, i, y, color);
+			}
+		} else {
+			for (int i = startX; i >= endX; i--) {
+				draw(g, i, y, color);
+			}
+		}	
+
+		if (useAntiAliasing)
+			g.setRenderingHints(oldrh);	
 	}
 
 	private void drawVertLine(Graphics2D g, int x, int startY, int endY, Color color) {
+		RenderingHints oldrh = null;
 		if (useAntiAliasing) {
-			drawLineA(g, x, endY, x, endY, color);
-		} else {
-			if (endY - startY >= 0) {
-				for (int i = startY; i <= endY; i++) {
-					draw(g, x, i, color);
-				}
-			} else {
-				for (int i = startY; i >= endY; i--) {
-					draw(g, x, i, color);
-				}
-			}	
+			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+			
+			oldrh = g.getRenderingHints();	
+			g.setRenderingHints(rh);	
 		}
+		
+		if (endY - startY >= 0) {
+			for (int i = startY; i <= endY; i++) {
+				draw(g, x, i, color);
+			}
+		} else {
+			for (int i = startY; i >= endY; i--) {
+				draw(g, x, i, color);
+			}
+		}	
+		
+		if (useAntiAliasing)
+			g.setRenderingHints(oldrh);	
 	}
 	
 	private void drawLineA(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
@@ -538,6 +566,11 @@ public class GameGraphics {
 		y1 *= GameEngine.PIXEL_SIZE;
 		x2 *= GameEngine.PIXEL_SIZE;
 		y2 *= GameEngine.PIXEL_SIZE;
+		
+		x1 += GameEngine.PIXEL_SIZE / 2;
+		y1 += GameEngine.PIXEL_SIZE / 2;
+		x2 += GameEngine.PIXEL_SIZE / 2;
+		y2 += GameEngine.PIXEL_SIZE / 2;
 		
 		Stroke oldStroke = g.getStroke();
 		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
@@ -555,6 +588,7 @@ public class GameGraphics {
 		
 		x *= GameEngine.PIXEL_SIZE;
 		y *= GameEngine.PIXEL_SIZE;
+		
 		int w = (radius * 2) * GameEngine.PIXEL_SIZE;
 		int h = (radius * 2) * GameEngine.PIXEL_SIZE;
 		
@@ -575,34 +609,12 @@ public class GameGraphics {
 		
 		x *= GameEngine.PIXEL_SIZE;
 		y *= GameEngine.PIXEL_SIZE;
+		
 		int w = (radius * 2) * GameEngine.PIXEL_SIZE;
 		int h = (radius * 2) * GameEngine.PIXEL_SIZE;
 	
 		Ellipse2D ell = new Ellipse2D.Double(x, y, w, h);		
 		g.fill(ell);
-	}
-	
-	private void drawRectA(Graphics2D g, int x, int y, int w, int h, Color color) {
-		g.setColor(color);
-
-		x *= GameEngine.PIXEL_SIZE;
-		y *= GameEngine.PIXEL_SIZE;
-		w *= GameEngine.PIXEL_SIZE;
-		h *= GameEngine.PIXEL_SIZE;
-		
-		RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-		rh.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-		
-		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
-		
-		RenderingHints oldrh = g.getRenderingHints();	
-		g.setRenderingHints(rh);	
-		
-		g.drawRect(x, y, w, h);
-		
-		g.setRenderingHints(oldrh);
-		g.setStroke(oldStroke);
 	}
 	
 	private void fillRectA(Graphics2D g, int x, int y, int w, int h, Color color) {
@@ -613,18 +625,28 @@ public class GameGraphics {
 		w *= GameEngine.PIXEL_SIZE;
 		h *= GameEngine.PIXEL_SIZE;
 		
+		x += GameEngine.PIXEL_SIZE / 2;
+		y += GameEngine.PIXEL_SIZE / 2;
+		
 		g.fillRect(x - GameEngine.PIXEL_SIZE / 2, y - GameEngine.PIXEL_SIZE / 2, w + GameEngine.PIXEL_SIZE, h + GameEngine.PIXEL_SIZE);
 	}
 	
 	private void drawTriangleA(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
 		g.setColor(color);
-		
+	    
 		x1 *= GameEngine.PIXEL_SIZE;
 		y1 *= GameEngine.PIXEL_SIZE;
 		x2 *= GameEngine.PIXEL_SIZE;
 		y2 *= GameEngine.PIXEL_SIZE;
 		x3 *= GameEngine.PIXEL_SIZE;
 		y3 *= GameEngine.PIXEL_SIZE;
+		
+		x1 += GameEngine.PIXEL_SIZE;
+		y1 += GameEngine.PIXEL_SIZE;
+		x2 += GameEngine.PIXEL_SIZE;
+		y2 += GameEngine.PIXEL_SIZE;
+		x3 += GameEngine.PIXEL_SIZE;
+		y3 += GameEngine.PIXEL_SIZE;
 		
 		Stroke oldStroke = g.getStroke();
 		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));

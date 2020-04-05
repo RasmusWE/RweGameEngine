@@ -9,6 +9,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 
@@ -32,7 +34,7 @@ public class GameFrame extends JFrame {
 		
 		this.engine = engine;
 		
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.setResizable(false);
 
 		if (fullScreen) {
@@ -66,10 +68,17 @@ public class GameFrame extends JFrame {
 			public void componentHidden(ComponentEvent e) {}
 			public void componentMoved(ComponentEvent e) {}
 		});
+		
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				engine.tryStop();
+			}		
+		});
 	}
 	
 	public void onUserDraw(Graphics2D g) {
-		engine.onUserDraw(g);
+		engine.onDraw(g);
 	}
 
 	public void display() {

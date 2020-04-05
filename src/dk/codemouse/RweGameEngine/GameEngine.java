@@ -14,10 +14,12 @@ import javax.swing.SwingUtilities;
  * 
  * Simple "Game engine" wrapper - Inspired from OneLoneCoders Console and Pixel GameEngines in C++.
  * 
- * Simply extend this class and implement the onUserCreate, onUserUpdate and onUserDraw to utilize the window and internal game loop.
+ * Simply extend this class and implement the onCreate, onUpdate and onDraw to utilize the window and internal game loop.
+ * Optionally use onDestroy to handle closing of application or potentially stop the application from closing by returning true.
+ * (Default is false and application will close normally when user tries closing window or function tryStop() is called). 
  * 
  * You are encouraged to use the drawing functions specifically designed for this engine - But you can also use std. functions in Graphics2D.
- * Not that if you use the std. functions from Graphics2D changing of pixel size will have no effect.
+ * Note that if you use the std. functions from Graphics2D changing of pixel size will have no effect.
  * 
  * Note if you change pixel size the default behaviour is that the width and height is affected as you choose a width of n pixels and height of n pixels.
  * You can choose not to have this behaviour by specifying "fitScreenToPixel = false" in the "construct" function.
@@ -30,15 +32,15 @@ import javax.swing.SwingUtilities;
  * Access mouse position with GameEngine.MouseX, GameEngine.MouseY.
  * Easily add key controls like so:
  * 
- *		if (keyReleased(KeyEvent.VK_ESCAPE)) {
- *			System.exit(0);
- *		}
+ *		if (keyReleased(KeyEvent.VK_ESCAPE)) {      if (keyPressed(KeyEvent.VK_RIGHT)) {
+ *			tryStop();									x++;
+ *		}											}
  * 
- * Access JFrame and JPanel screen directly to do this. For example you can also change frame properties like so: 
+ * You can also access JFrame and JPanel screen directly. For example you can change frame properties like so: 
  * frame.setResizable(false);
  * 
  * @author Rasmus Wehlast Engelbrecht
- * @version 1.2
+ * @version 1.3
  * 
  */
 
@@ -69,6 +71,14 @@ public abstract class GameEngine {
 	
 	private boolean constructed = false, fitScreenToPixel = true;
 
+	public abstract void onCreate();
+	
+	public abstract void onUpdate(double elapsedTime, double time);
+	
+	public abstract void onDraw(Graphics2D g);
+	
+	public abstract boolean onDestroy(); 
+	
 	public int screenWidth() {
 		return frame.frameDimension.width / GameEngine.PIXEL_SIZE;
 	}
@@ -156,6 +166,17 @@ public abstract class GameEngine {
 		loop.start();
 	}
 	
+	public boolean tryStop() {
+		if (!onDestroy()) {
+			loop.stop();
+			frame.setVisible(false);
+			frame.dispose();
+			System.exit(0);
+		}
+		
+		return false;
+	}
+	
 	public void render() {
 		frame.repaint();
 	}
@@ -180,12 +201,6 @@ public abstract class GameEngine {
 		frame.setFPS(fps);
 	}
 	
-	public abstract void onUserCreate();
-	
-	public abstract void onUserUpdate();
-	
-	public abstract void onUserDraw(Graphics2D g);
-	
 	public boolean useAntiAliasing() {
 		return gameGraphics.useAntiAliasing();
 	}
@@ -202,8 +217,8 @@ public abstract class GameEngine {
 		gameGraphics.draw(g, x, y, color);
 	}
 	
-	public void drawLine(Graphics2D g, int x1, int x2, int y1, int y2, Color color) {
-		gameGraphics.drawLine(g, x1, x2, y1, y2, color);
+	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
+		gameGraphics.drawLine(g, x1, y1, x2, y2, color);
 	}
 	
 	public void drawTriangle(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
@@ -238,6 +253,10 @@ public abstract class GameEngine {
 		gameGraphics.setFont(font);
 	}
 	
+	public void setFontSize(float size) {
+		gameGraphics.setFontSize(size);
+	}
+	
 	private boolean doConstruct(int width, int height, int pixelSize) {
 		if (constructed) {
 			System.err.println("GameEngine already constructed!");
@@ -252,7 +271,7 @@ public abstract class GameEngine {
 			frame = new GameFrame(this, title, width, height, fullScreen, fitScreenToPixel);		
 			gameGraphics = new GameGraphics(this, pixelSize, fullScreen);
 			
-			onUserCreate();
+			onCreate();
 			
 			if (customMouseListener != null)
 				frame.addMouseListener(customMouseListener);

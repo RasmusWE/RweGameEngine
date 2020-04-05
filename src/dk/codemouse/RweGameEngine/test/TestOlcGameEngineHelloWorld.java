@@ -8,48 +8,42 @@ import dk.codemouse.RweGameEngine.GameEngine;
 
 public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
-	int i = 0;
-	
 	@Override
-	public void onUserCreate() {
+	public void onCreate() {
 		useAntiAliasing(true);
 		frame.setResizable(true);
 	}
 
 	@Override
-	public void onUserUpdate() {
-		if (i < 1000)
-			i++;
-		else
-			i = 0;
-		
+	public void onUpdate(double et, double t) {
 		//Exit
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
-			System.exit(0);
+			tryStop();
 		}
 	}
 
 	@Override
-	public void onUserDraw(Graphics2D g) {
+	public void onDraw(Graphics2D g) {
 		//Clear screen
-		g.setColor(Color.black);
-		g.fillRect(0, 0, screenWidth(), screenHeight());
+		clearScreen(g, Color.black);
 		
 //		In Olc's Hello World example random colored pixels are displayed		
-//		for (int x = 0; x < screenWidth(); x++)
-//			for (int y = 0; y < screenHeight(); y++) {			
-//				draw(g, x, y, new Color(random.nextInt(255) + 1, random.nextInt(255) + 1, random.nextInt(255) + 1));	
-//			}
-		
-//		I like these dynamically moving colors change		
 		for (int x = 0; x < screenWidth(); x++)
 			for (int y = 0; y < screenHeight(); y++) {			
-				draw(g, x, y, new Color((x + i) % 255 + 1, (y + i) % 255 + 1, (y + x + i) % 255 + 1));	
+				draw(g, x, y, new Color(random.nextInt(255) + 1, random.nextInt(255) + 1, random.nextInt(255) + 1));	
 			}
-			
+		
+//		for (int x = 0; x < screenWidth(); x++)
+//			for (int y = 0; y < screenHeight(); y++) {	
+//				if ((x + y) % 2 == 0)
+//					draw(g, x, y, Color.DARK_GRAY);	
+//				else
+//					draw(g, x, y, Color.BLACK);	
+//			}
+		
 		drawLine(g, 90, 5, 65, 30, Color.WHITE);
 		
-		drawTriangle(g, 5, 5, 70, 20, 30, 70, Color.WHITE);
+		drawTriangle(g, 0, 5, 70, 20, 30, 70, Color.WHITE);
 		
 		fillTriangle(g, 90, 70, 70, 30, 50, 60, Color.WHITE);
 		
@@ -57,9 +51,19 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 		
 		fillCircle(g, 35, 40, 10, Color.WHITE);
 		
-		drawRect(g, 5, 50, 10, 10, Color.WHITE);
+		drawLine(g, 1, 1, 10, 1, Color.WHITE);
 		
-		fillRect(g, 5, 63, 10, 10, Color.WHITE);
+		drawRect(g, 1, 50, 10, 10, Color.WHITE);
+		
+		fillRect(g, 1, 62, 10, 10, Color.WHITE);
+		
+		setFontSize(8);
+		drawString(g, "Hello world", 30, 10, Color.white);
+	}
+	
+	@Override
+	public boolean onDestroy() {
+		return false;
 	}
 	
 	public static void main(String[] args) {
