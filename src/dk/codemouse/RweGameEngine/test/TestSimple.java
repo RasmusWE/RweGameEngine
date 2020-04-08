@@ -22,7 +22,7 @@ public class TestSimple extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(false);
+		useAntiAliasing(true);
 		frame.setResizable(true);
 		
 		//setFont(new Font("TimesRoman", Font.PLAIN, 20));

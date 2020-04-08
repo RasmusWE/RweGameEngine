@@ -63,13 +63,13 @@ public class GameGraphics {
 	public void draw(Graphics2D g, float x, float y, Color color) {		
 		x *= GameEngine.getPixelSize();
 		y *= GameEngine.getPixelSize();
-		
+
 		if (x > engine.frame.frameDimension.width || x < 0)
 			return;
 		
 		if (y > engine.frame.frameDimension.height|| y < 0)
 			return;
-		
+
 		g.setColor(color);
 		g.fillRect((int) x, (int) y, GameEngine.getPixelSize(), GameEngine.getPixelSize());
 	}
@@ -106,7 +106,7 @@ public class GameGraphics {
 				x = x2; y = y2; xe = x1;
 			}
 
-			draw(g, x, y, color);
+			engine.draw(g, x, y, color);
 			
 			while (x < xe) {
 				x = x + 1;
@@ -116,7 +116,7 @@ public class GameGraphics {
 					if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
 					px = px + 2 * (dy1 - dx1);
 				}
-				draw(g, x, y, color);
+				engine.draw(g, x, y, color);
 			}
 		} else {
 			if (dy >= 0) { 
@@ -125,7 +125,7 @@ public class GameGraphics {
 				x = x2; y = y2; ye = y1; 
 			}
 	
-			draw(g, x, y, color);
+			engine.draw(g, x, y, color);
 			
 			while (y < ye) {
 				y = y + 1;
@@ -137,7 +137,7 @@ public class GameGraphics {
 						py = py + 2 * (dx1 - dy1);
 				}
 			
-				draw(g, x, y, color);
+				engine.draw(g, x, y, color);
 			}
 		}
 	}
@@ -152,9 +152,9 @@ public class GameGraphics {
 			int iy1 = (int) y1;
 			int iy2 = (int) y2;
 			int iy3 = (int) y3;
-			drawLine(g, ix1, iy1, ix2, iy2, color);
-			drawLine(g, ix2, iy2, ix3, iy3, color);
-			drawLine(g, ix3, iy3, ix1, iy1, color);	
+			engine.drawLine(g, ix1, iy1, ix2, iy2, color);
+			engine.drawLine(g, ix2, iy2, ix3, iy3, color);
+			engine.drawLine(g, ix3, iy3, ix1, iy1, color);	
 		}
 	}
 	
@@ -434,14 +434,14 @@ public class GameGraphics {
 			float p = 3 - 2 * radius;
 
 			while (y >= x) { //formulate only 1/8 of circle
-				draw(g, xCenter - x, yCenter - y, color);
-				draw(g, xCenter - y, yCenter - x, color);
-				draw(g, xCenter + y, yCenter - x, color);
-				draw(g, xCenter + x, yCenter - y, color);
-				draw(g, xCenter - x, yCenter + y, color);
-				draw(g, xCenter - y, yCenter + x, color);
-				draw(g, xCenter + y, yCenter + x, color);
-				draw(g, xCenter + x, yCenter + y, color);
+				engine.draw(g, xCenter - x, yCenter - y, color);
+				engine.draw(g, xCenter - y, yCenter - x, color);
+				engine.draw(g, xCenter + y, yCenter - x, color);
+				engine.draw(g, xCenter + x, yCenter - y, color);
+				engine.draw(g, xCenter - x, yCenter + y, color);
+				engine.draw(g, xCenter - y, yCenter + x, color);
+				engine.draw(g, xCenter + y, yCenter + x, color);
+				engine.draw(g, xCenter + x, yCenter + y, color);
 				if (p < 0) {
 					p += 4 * x++ + 6;
 				} else {
@@ -484,10 +484,10 @@ public class GameGraphics {
 			g.setRenderingHints(rh);	
 		}
 		
-		drawLine(g, (int) x, (int) y, (int) x + w, (int) y, color);
-		drawLine(g, (int) x + w, (int) y, (int) x + w, (int) y + h, color);
-		drawLine(g, (int) x + w, (int) y + h, (int) x, (int) y + h, color);
-		drawLine(g, (int) x, (int) y + h, (int) x, (int) y, color);
+		engine.drawLine(g, (int) x, (int) y, (int) x + w, (int) y, color);
+		engine.drawLine(g, (int) x + w, (int) y, (int) x + w, (int) y + h, color);
+		engine.drawLine(g, (int) x + w, (int) y + h, (int) x, (int) y + h, color);
+		engine.drawLine(g, (int) x, (int) y + h, (int) x, (int) y, color);
 			
 		if (useAntiAliasing)
 			g.setRenderingHints(oldrh);
@@ -502,7 +502,7 @@ public class GameGraphics {
 	
 			float yIncr = y;
 			while (yIncr <= y2) {
-				drawLine(g, (int) x, (int) yIncr, (int) x2, (int) yIncr, color);
+				engine.drawLine(g, (int) x, (int) yIncr, (int) x2, (int) yIncr, color);
 				yIncr += 1;
 			}
 		}
@@ -549,7 +549,7 @@ public class GameGraphics {
 		} else {
 			for (int i = 0; i < verts + 1; i++) {
 				int j = (i + 1);
-				drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), Color.WHITE);
+				engine.drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), Color.WHITE);
 			}
 		}
 	}
@@ -595,11 +595,11 @@ public class GameGraphics {
 		
 		if (endX - startX >= 0) {
 			for (float i = startX; i <= endX; i++) {
-				draw(g, i, y, color);
+				engine.draw(g, i, y, color);
 			}
 		} else {
 			for (float i = startX; i >= endX; i--) {
-				draw(g, i, y, color);
+				engine.draw(g, i, y, color);
 			}
 		}	
 
@@ -619,11 +619,11 @@ public class GameGraphics {
 		
 		if (endY - startY >= 0) {
 			for (float i = startY; i <= endY; i++) {
-				draw(g, x, i, color);
+				engine.draw(g, x, i, color);
 			}
 		} else {
 			for (float i = startY; i >= endY; i--) {
-				draw(g, x, i, color);
+				engine.draw(g, x, i, color);
 			}
 		}	
 		
