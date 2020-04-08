@@ -21,13 +21,13 @@ public class GameScreen extends JPanel {
 		
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseMoved(MouseEvent e) {
-				GameEngine.MouseX = e.getX() / GameEngine.PIXEL_SIZE;
-				GameEngine.MouseY = e.getY() / GameEngine.PIXEL_SIZE;
+				GameEngine.MouseX = e.getX() / GameEngine.getPixelSize();
+				GameEngine.MouseY = e.getY() / GameEngine.getPixelSize();
 			}
 			
 			public void mouseDragged(MouseEvent e) {
-				GameEngine.MouseX = e.getX() / GameEngine.PIXEL_SIZE;
-				GameEngine.MouseY = e.getY() / GameEngine.PIXEL_SIZE;
+				GameEngine.MouseX = e.getX() / GameEngine.getPixelSize();
+				GameEngine.MouseY = e.getY() / GameEngine.getPixelSize();
 			}
 		});	
 	}

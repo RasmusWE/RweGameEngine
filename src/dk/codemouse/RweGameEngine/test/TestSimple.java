@@ -15,7 +15,7 @@ public class TestSimple extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(false);
+		useAntiAliasing(true);
 		frame.setResizable(true);
 		
 		//setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -23,6 +23,8 @@ public class TestSimple extends GameEngine{
 
 	@Override
 	public void onDraw(Graphics2D g) {
+		clearScreen(g, Color.cyan);
+		
 		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
 		drawCircle(g, x, y, 10, Color.BLACK);
 
@@ -42,7 +44,7 @@ public class TestSimple extends GameEngine{
 	}
 
 	@Override
-	public void onUpdate(double et, double t) {
+	public void onUpdate(double elapsedTime) {
 		if (keyHeld(KeyEvent.VK_RIGHT))
 			x += 1;
 		
@@ -70,7 +72,7 @@ public class TestSimple extends GameEngine{
 		
 		//Exit
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
-			System.exit(0);
+			tryStop();
 		}
 	}
 	

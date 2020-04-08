@@ -4,14 +4,14 @@ import java.time.Duration;
 import java.time.LocalTime;
 
 public class GameLoop {
-
-	private volatile boolean running;
+	
 	private int ticks, frames;
-	private double t = 0.0;
 	private final double MAX_DT = 1 / 60.0;
 
 	private GameEngine engine;
 	private Thread loopThread;
+
+	private volatile boolean running;
 	
 	public GameLoop(GameEngine engine) {
 		this.engine = engine;
@@ -24,6 +24,13 @@ public class GameLoop {
 	
 	public void stop() {
 		running = false;
+		
+		/*
+		try {
+			loopThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}*/
 	}
 
 	private void gameLoop() {
@@ -53,16 +60,18 @@ public class GameLoop {
 				time = timeNow;
 
 				double currDt = Math.min(elapsedSeconds, MAX_DT);
+				GameEngine.T_ELAPSED_TIME += currDt;
 				
-				t += currDt;
 				update(currDt);
-				input();
+				input();	
+				
 				ticks++;
 				deltaU--;
 			}
 
 			if (deltaF >= 1) {
 				render();
+				
 				frames++;
 				deltaF--;
 			}
@@ -82,12 +91,12 @@ public class GameLoop {
 		engine.keys.resetKeys();
 	}
 	
-	private synchronized void update(double elapsedTime) {
-		engine.onUpdate(elapsedTime, t);
+	private void update(double elapsedTime) {
+		engine.onUpdate(elapsedTime);
 		engine.sendFpsToFrame(GameEngine.CURRENT_FPS);
 	}
 	
-	private synchronized void render() {
+	private void render() {
 		engine.render();
 	}
 

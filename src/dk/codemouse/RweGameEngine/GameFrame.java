@@ -45,8 +45,8 @@ public class GameFrame extends JFrame {
 			frameDimension = Toolkit.getDefaultToolkit().getScreenSize();
 		} else {
 			if (fitScreenToPixel) {
-				width *= GameEngine.PIXEL_SIZE;
-				height *= GameEngine.PIXEL_SIZE;
+				width *= GameEngine.getPixelSize();
+				height *= GameEngine.getPixelSize();
 			}
 			
 			frameDimension = new Dimension(width, height);

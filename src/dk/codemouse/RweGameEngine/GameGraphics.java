@@ -28,17 +28,22 @@ public class GameGraphics {
 	private GameEngine engine;	
 	private Font font;
 	
-	private boolean useAntiAliasing = false;
+	private boolean useAntiAliasing = false, fullScreen = false;
 	
-	public GameGraphics(GameEngine engine, int pixelSize, boolean fullScreen) {
-		this.engine = engine;
+	public GameGraphics(GameEngine engine, boolean fullScreen) {
+		this.engine 	= engine;
+		this.fullScreen = fullScreen;
 
-		if (pixelSize > 1 && fullScreen) {
-			pixelSize = findNearestDivisible(engine.frame.frameDimension.width, engine.frame.frameDimension.height, pixelSize);
-			GameEngine.PIXEL_SIZE = pixelSize;
+		font = new Font(Font.MONOSPACED, Font.PLAIN, (int)(getGPixelSize() * 20));
+	}
+	
+	public int getGPixelSize() {
+		int ps = GameEngine.getPixelSize();
+		if (ps > 1 && fullScreen) {
+			return findNearestDivisible(engine.frame.frameDimension.width, engine.frame.frameDimension.height, ps);
 		}
-		
-		font = new Font(Font.MONOSPACED, Font.PLAIN, (int)(GameEngine.PIXEL_SIZE * 20));
+
+		return ps;
 	}
 	
 	public void useAntiAliasing(boolean tof) {
@@ -55,8 +60,8 @@ public class GameGraphics {
 	}
 	
 	public void draw(Graphics2D g, int x, int y, Color color) {
-		x *= GameEngine.PIXEL_SIZE;
-		y *= GameEngine.PIXEL_SIZE;
+		x *= GameEngine.getPixelSize();
+		y *= GameEngine.getPixelSize();
 		
 		if (x > engine.frame.frameDimension.width || x < 0)
 			return;
@@ -65,7 +70,7 @@ public class GameGraphics {
 			return;
 		
 		g.setColor(color);
-		g.fillRect(x, y, GameEngine.PIXEL_SIZE, GameEngine.PIXEL_SIZE);
+		g.fillRect(x, y, GameEngine.getPixelSize(), GameEngine.getPixelSize());
 	}
 	
 	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
@@ -484,16 +489,16 @@ public class GameGraphics {
 	
 	public void setFont(Font font) {
 		this.font = font;
-		this.font = font.deriveFont((float) font.getSize() * GameEngine.PIXEL_SIZE);
+		this.font = font.deriveFont((float) font.getSize() * GameEngine.getPixelSize());
 	}
 	
 	public void setFontSize(float size) {
-		this.font = font.deriveFont(size * GameEngine.PIXEL_SIZE);
+		this.font = font.deriveFont(size * GameEngine.getPixelSize());
 	}
 	
 	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
-		x = (x * GameEngine.PIXEL_SIZE) - (GameEngine.PIXEL_SIZE + 1);
-		y = (y * GameEngine.PIXEL_SIZE) - (GameEngine.PIXEL_SIZE + 1);
+		x = (x * GameEngine.getPixelSize()) - (GameEngine.getPixelSize() + 1);
+		y = (y * GameEngine.getPixelSize()) - (GameEngine.getPixelSize() + 1);
 		
 		g.setColor(color);
 		g.setFont(font);
@@ -562,18 +567,20 @@ public class GameGraphics {
 	private void drawLineA(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
 		g.setColor(color);
 		
-		x1 *= GameEngine.PIXEL_SIZE;
-		y1 *= GameEngine.PIXEL_SIZE;
-		x2 *= GameEngine.PIXEL_SIZE;
-		y2 *= GameEngine.PIXEL_SIZE;
+		int ps = GameEngine.getPixelSize();
 		
-		x1 += GameEngine.PIXEL_SIZE / 2;
-		y1 += GameEngine.PIXEL_SIZE / 2;
-		x2 += GameEngine.PIXEL_SIZE / 2;
-		y2 += GameEngine.PIXEL_SIZE / 2;
+		x1 *= ps;
+		y1 *= ps;
+		x2 *= ps;
+		y2 *= ps;
+		
+		x1 += ps / 2;
+		y1 += ps / 2;
+		x2 += ps / 2;
+		y2 += ps / 2;
 		
 		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		g.setStroke(new BasicStroke(ps));
 		
 		g.drawLine(x1, y1, x2, y2);
 		
@@ -583,17 +590,22 @@ public class GameGraphics {
 	private void drawCircleA(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
 		g.setColor(color);
 		
+		int ps = GameEngine.getPixelSize();
+		
 		int x = xCenter - radius;
 		int y = yCenter - radius;
 		
-		x *= GameEngine.PIXEL_SIZE;
-		y *= GameEngine.PIXEL_SIZE;
+		x *= ps;
+		y *= ps;
 		
-		int w = (radius * 2) * GameEngine.PIXEL_SIZE;
-		int h = (radius * 2) * GameEngine.PIXEL_SIZE;
+		x += ps / 2;
+		y += ps / 2;
+		
+		int w = (radius * 2) * ps;
+		int h = (radius * 2) * ps;
 		
 		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		g.setStroke(new BasicStroke(ps));
 		
 		Ellipse2D ell = new Ellipse2D.Double(x, y, w, h);
 		g.draw(ell);
@@ -604,14 +616,19 @@ public class GameGraphics {
 	private void fillCircleA(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
 		g.setColor(color);
 		
+		int ps = GameEngine.getPixelSize();
+		
 		int x = xCenter - radius;
 		int y = yCenter - radius;
 		
-		x *= GameEngine.PIXEL_SIZE;
-		y *= GameEngine.PIXEL_SIZE;
+		x *= ps;
+		y *= ps;
 		
-		int w = (radius * 2) * GameEngine.PIXEL_SIZE;
-		int h = (radius * 2) * GameEngine.PIXEL_SIZE;
+		x += ps / 2;
+		y += ps / 2;
+		
+		int w = (radius * 2) * ps;
+		int h = (radius * 2) * ps;
 	
 		Ellipse2D ell = new Ellipse2D.Double(x, y, w, h);		
 		g.fill(ell);
@@ -620,36 +637,40 @@ public class GameGraphics {
 	private void fillRectA(Graphics2D g, int x, int y, int w, int h, Color color) {
 		g.setColor(color);
 
-		x *= GameEngine.PIXEL_SIZE;
-		y *= GameEngine.PIXEL_SIZE;
-		w *= GameEngine.PIXEL_SIZE;
-		h *= GameEngine.PIXEL_SIZE;
+		int ps = GameEngine.getPixelSize();
 		
-		x += GameEngine.PIXEL_SIZE / 2;
-		y += GameEngine.PIXEL_SIZE / 2;
+		x *= ps;
+		y *= ps;
+		w *= ps;
+		h *= ps;
 		
-		g.fillRect(x - GameEngine.PIXEL_SIZE / 2, y - GameEngine.PIXEL_SIZE / 2, w + GameEngine.PIXEL_SIZE, h + GameEngine.PIXEL_SIZE);
+		x += ps / 2;
+		y += ps / 2;
+		
+		g.fillRect(x - ps / 2, y - ps / 2, w + ps, h + ps);
 	}
 	
 	private void drawTriangleA(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
 		g.setColor(color);
 	    
-		x1 *= GameEngine.PIXEL_SIZE;
-		y1 *= GameEngine.PIXEL_SIZE;
-		x2 *= GameEngine.PIXEL_SIZE;
-		y2 *= GameEngine.PIXEL_SIZE;
-		x3 *= GameEngine.PIXEL_SIZE;
-		y3 *= GameEngine.PIXEL_SIZE;
+		int ps = GameEngine.getPixelSize();
 		
-		x1 += GameEngine.PIXEL_SIZE;
-		y1 += GameEngine.PIXEL_SIZE;
-		x2 += GameEngine.PIXEL_SIZE;
-		y2 += GameEngine.PIXEL_SIZE;
-		x3 += GameEngine.PIXEL_SIZE;
-		y3 += GameEngine.PIXEL_SIZE;
+		x1 *= ps;
+		y1 *= ps;
+		x2 *= ps;
+		y2 *= ps;
+		x3 *= ps;
+		y3 *= ps;
+		
+		x1 += ps / 2;
+		y1 += ps / 2;
+		x2 += ps / 2;
+		y2 += ps / 2;
+		x3 += ps / 2;
+		y3 += ps / 2;
 		
 		Stroke oldStroke = g.getStroke();
-		g.setStroke(new BasicStroke(GameEngine.PIXEL_SIZE));
+		g.setStroke(new BasicStroke(ps));
 		
 	    TriangleShape triangleShape = new TriangleShape(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), new Point2D.Double(x3, y3));
 	    g.draw(triangleShape);
@@ -660,12 +681,21 @@ public class GameGraphics {
 	private void fillTriangleA(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
 		g.setColor(color);
 		
-		x1 *= GameEngine.PIXEL_SIZE;
-		y1 *= GameEngine.PIXEL_SIZE;
-		x2 *= GameEngine.PIXEL_SIZE;
-		y2 *= GameEngine.PIXEL_SIZE;
-		x3 *= GameEngine.PIXEL_SIZE;
-		y3 *= GameEngine.PIXEL_SIZE;
+		int ps = GameEngine.getPixelSize();
+		
+		x1 *= ps;
+		y1 *= ps;
+		x2 *= ps;
+		y2 *= ps;
+		x3 *= ps;
+		y3 *= ps;
+		
+		x1 += ps / 2;
+		y1 += ps / 2;
+		x2 += ps / 2;
+		y2 += ps / 2;
+		x3 += ps / 2;
+		y3 += ps / 2;
 		
 	    TriangleShape triangleShape = new TriangleShape(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), new Point2D.Double(x3, y3));
 	    g.fill(triangleShape);

@@ -10,12 +10,12 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(true);
-		frame.setResizable(true);
+//		useAntiAliasing(true);
+//		frame.setResizable(true);
 	}
 
 	@Override
-	public void onUpdate(double et, double t) {
+	public void onUpdate(double elapsedTime) {
 		//Exit
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
 			tryStop();
@@ -43,7 +43,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 		
 		drawLine(g, 90, 5, 65, 30, Color.WHITE);
 		
-		drawTriangle(g, 0, 5, 70, 20, 30, 70, Color.WHITE);
+		drawTriangle(g, 1, 5, 70, 20, 30, 72, Color.WHITE);
 		
 		fillTriangle(g, 90, 70, 70, 30, 50, 60, Color.WHITE);
 		

@@ -49,13 +49,12 @@ public abstract class GameEngine {
 	protected String title = "RweGameEngine";
 	
 	protected GameFrame frame;
-
-	public static int PIXEL_SIZE = 1;
 	
-	public static int TFPS = 60; //Target FPS (FPS CAP)
-	public static int TUPS = 60;  //Target Updates - lowering or increasing this will make the engine update logic more or less often
-	public static int CURRENT_FPS  = 0;
-	public static int CURRENT_UPS  = 0;
+	public static int TFPS 				= 60; //Target FPS (FPS CAP)
+    public static int TUPS 				= 60;  //Target Updates - lowering or increasing this will make the engine update logic more or less often
+	public static int CURRENT_FPS  		= 0;
+	public static int CURRENT_UPS  		= 0;
+	public static double T_ELAPSED_TIME = 0;
 	
 	public static int MouseX = 0;
 	public static int MouseY = 0;
@@ -66,6 +65,8 @@ public abstract class GameEngine {
 	private GameLoop loop;
 	private GameGraphics gameGraphics;
 	
+	private static int pixelSize = 1;
+	
 	private MouseListener customMouseListener;
 	private MouseMotionListener customMouseMotionListener;
 	
@@ -73,18 +74,18 @@ public abstract class GameEngine {
 
 	public abstract void onCreate();
 	
-	public abstract void onUpdate(double elapsedTime, double time);
+	public abstract void onUpdate(double elapsedTime);
 	
 	public abstract void onDraw(Graphics2D g);
 	
 	public abstract boolean onDestroy(); 
 	
 	public int screenWidth() {
-		return frame.frameDimension.width / GameEngine.PIXEL_SIZE;
+		return frame.frameDimension.width / GameEngine.pixelSize;
 	}
 	
 	public int screenHeight() {
-		return frame.frameDimension.height / GameEngine.PIXEL_SIZE;
+		return frame.frameDimension.height / GameEngine.pixelSize;
 	}
 	
 	public boolean keyPressed(int keyCode) {
@@ -112,7 +113,7 @@ public abstract class GameEngine {
 	}
 	
 	public boolean construct() {
-		return doConstruct(0, 0, PIXEL_SIZE);
+		return doConstruct(0, 0, pixelSize);
 	}
 	
 	public boolean construct(int pixelSize) {
@@ -122,7 +123,7 @@ public abstract class GameEngine {
 	public boolean construct(String title) {
 		this.title = title;
 		
-		return doConstruct(0, 0, PIXEL_SIZE);
+		return doConstruct(0, 0, pixelSize);
 	}
 	
 	public boolean construct(String title, int pixelSize) {
@@ -132,7 +133,7 @@ public abstract class GameEngine {
 	}
 	
 	public boolean construct(int width, int height) {
-		return doConstruct(width, height, PIXEL_SIZE);
+		return doConstruct(width, height, pixelSize);
 	}
 	
 	public boolean construct(int width, int height, int pixelSize) {
@@ -148,7 +149,7 @@ public abstract class GameEngine {
 	public boolean construct(String title, int width, int height) {
 		this.title = title;
 		
-		return doConstruct(width, height, PIXEL_SIZE);
+		return doConstruct(width, height, pixelSize);
 	}
 	
 	public boolean construct(String title, int width, int height, int pixelSize) {
@@ -164,22 +165,21 @@ public abstract class GameEngine {
 		return doConstruct(width, height, pixelSize);
 	}
 	
-	public void start() {
+	public void start() {		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				frame.display();
 			}
 		});
-
+		
 		loop.start();
 	}
 	
 	public boolean tryStop() {
 		if (!onDestroy()) {
-			loop.stop();
 			frame.setVisible(false);
 			frame.dispose();
-			System.exit(0);
+			loop.stop();
 		}
 		
 		return false;
@@ -265,6 +265,10 @@ public abstract class GameEngine {
 		gameGraphics.setFontSize(size);
 	}
 	
+	public static int getPixelSize() {
+		return pixelSize;
+	}
+	
 	private boolean doConstruct(int width, int height, int pixelSize) {
 		if (constructed) {
 			System.err.println("GameEngine already constructed!");
@@ -273,14 +277,16 @@ public abstract class GameEngine {
 
 		boolean fullScreen = (width == 0 && height == 0) ? true:false;
 
-		GameEngine.PIXEL_SIZE = pixelSize > 1 ? pixelSize:1;
+		GameEngine.pixelSize = pixelSize > 1 ? pixelSize:1;
 
 		try {			
-			frame = new GameFrame(this, title, width, height, fullScreen, fitScreenToPixel);		
-			gameGraphics = new GameGraphics(this, pixelSize, fullScreen);
+			frame = new GameFrame(this, title, width, height, fullScreen, fitScreenToPixel);	
+			
+			gameGraphics = new GameGraphics(this, fullScreen);
+			pixelSize = gameGraphics.getGPixelSize();
 			
 			onCreate();
-			
+
 			if (customMouseListener != null)
 				frame.addMouseListener(customMouseListener);
 			if (customMouseMotionListener != null) 

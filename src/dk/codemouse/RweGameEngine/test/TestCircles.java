@@ -22,16 +22,6 @@ public class TestCircles extends GameEngine {
 		
 		int id;
 		
-		public void fall() {
-			if (py + radius < screenHeight() - 1 && this != selectedBall) {
-				ay = ay + GRAVITY;
-				if (ay > TERM_VEL)
-					ay = TERM_VEL;
-				
-				vy += ay;	
-			}
-		}
-		
 		public void resetAcc() {
 			vx = 0;
 			vy = 0;
@@ -50,8 +40,6 @@ public class TestCircles extends GameEngine {
 		}
 	}
 	
-	private final float GRAVITY = 0.8f;
-	private final float TERM_VEL = GRAVITY * 15;
 	private final float DAMPING = 0.95f;
 	
 	private ArrayList<Ball> balls = new ArrayList<>();
@@ -135,7 +123,7 @@ public class TestCircles extends GameEngine {
 	}
 
 	@Override
-	public void onUpdate(double et, double t) {
+	public void onUpdate(double elapsedTime) {
 		//Update ball positions
 		for (Ball ball : balls) {
 			ball.ax = -ball.vx * 0.008f;
