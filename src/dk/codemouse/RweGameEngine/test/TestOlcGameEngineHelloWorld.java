@@ -10,7 +10,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-//		useAntiAliasing(true);
+		useAntiAliasing(false);
 //		frame.setResizable(true);
 	}
 

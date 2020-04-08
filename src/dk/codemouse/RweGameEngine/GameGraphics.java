@@ -73,65 +73,72 @@ public class GameGraphics {
 		g.fillRect(x, y, GameEngine.getPixelSize(), GameEngine.getPixelSize());
 	}
 	
-	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
-		// bresenham's line algorithm
-		double deltaX = x2 - x1;
-		if (deltaX == 0) {
+	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {		
+		int x, y, dx, dy, dx1, dy1, px, py, xe, ye;
+		
+		dx = x2 - x1; 
+		if (dx == 0) {
 			drawVertLine(g, x1, y1, y2, color);
+			return;
+		}
+		
+		dy = y2 - y1;
+		if (dy == 0) {
+			drawHorizLine(g, x1, x2, y1, color);
+			return;
+		}
+		
+		if (useAntiAliasing) {
+			drawLineA(g, x1, y1, x2, y2, color);
+			return;
+		}
+		
+		dx1 = Math.abs(dx); 
+		dy1 = Math.abs(dy);
+		
+		px = 2 * dy1 - dx1;	py = 2 * dx1 - dy1;
+		
+		if (dy1 <= dx1) {
+			if (dx >= 0) {
+				x = x1; y = y1; xe = x2; 
+			} else { 
+				x = x2; y = y2; xe = x1;
+			}
+
+			draw(g, x, y, color);
+			
+			while (x < xe) {
+				x = x + 1;
+				if (px<0)
+					px = px + 2 * dy1;
+				else {
+					if ((dx<0 && dy<0) || (dx>0 && dy>0)) y = y + 1; else y = y - 1;
+					px = px + 2 * (dy1 - dx1);
+				}
+				draw(g, x, y, color);
+			}
 		} else {
-			int xSign = 1;
-			if (deltaX < 0) {
-				xSign = -1;
+			if (dy >= 0) { 
+				x = x1; y = y1; ye = y2; 
+			} else { 
+				x = x2; y = y2; ye = y1; 
 			}
-			double deltaY = y2 - y1;
-			if (deltaY == 0) {
-				drawHorizLine(g, x1, x2, y1, color);
-			} else {
-				if (useAntiAliasing) {
-					drawLineA(g, x1, y1, x2, y2, color);
-					return;
-				}
+	
+			draw(g, x, y, color);
+			
+			while (y < ye) {
+				y = y + 1;
 				
-				int ySign = 1;
-				if (deltaY < 0) {
-					ySign = -1;
+				if (py <= 0)
+					py = py + 2 * dx1;
+				else {
+					if ((dx<0 && dy<0) || (dx>0 && dy>0)) x = x + 1; else x = x - 1;
+						py = py + 2 * (dx1 - dy1);
 				}
-				double deltaXErr = Math.abs(deltaX / deltaY);
-				double xError = 0;
-				double deltaYErr = Math.abs(deltaY / deltaX);
-				double yError = 0;
-				int y = y1;
-				if (deltaX >= 0) {
-					for (int i = x1; i <= x2;) {
-						draw(g, i, y, color);
-						xError += deltaXErr;
-						if (xError >= 0.5) {
-							i += xSign;
-							xError -= 1;
-						}
-						yError += deltaYErr;
-						if (yError >= 0.5) {
-							y += ySign;
-							yError -= 1;
-						}
-					}
-				} else {
-					for (int i = x1; i >= x2;) {
-						draw(g, i, y, color);
-						xError += deltaXErr;
-						if (xError >= 0.5) {
-							i += xSign;
-							xError -= 1;
-						}
-						yError += deltaYErr;
-						if (yError >= 0.5) {
-							y += ySign;
-							yError -= 1;
-						}
-					}
-				}
+			
+				draw(g, x, y, color);
 			}
-		}	
+		}
 	}
 	
 	public void drawTriangle(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {

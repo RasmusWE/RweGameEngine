@@ -1,17 +1,17 @@
 package dk.codemouse.RweGameEngine;
 
 public class Pair<T> {
-	T first, last;
+	public T first, last;
 	public Pair(T a, T b) {
 		this.first = a;
 		this.last = b;
 	}
 	
 	public void swap() {
-		T tempa = first;
+		T tempf = first;
 		
 		first = last;
-		last = tempa;
+		last = tempf;
 	}
 	
 	public static <T> Pair<T> swap(T first, T last) {

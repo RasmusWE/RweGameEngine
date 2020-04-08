@@ -50,11 +50,11 @@ public abstract class GameEngine {
 	
 	protected GameFrame frame;
 	
-	public static int TFPS 				= 60; //Target FPS (FPS CAP)
-    public static int TUPS 				= 60;  //Target Updates - lowering or increasing this will make the engine update logic more or less often
+	public static int TFPS 				= 60; 	//Target FPS (FPS CAP)
+    public static int TUPS 				= 60; 	//Target Updates - lowering or increasing this will make the engine update logic more or less often
 	public static int CURRENT_FPS  		= 0;
 	public static int CURRENT_UPS  		= 0;
-	public static double T_ELAPSED_TIME = 0;
+	public static double T_ELAPSED_TIME = 0;	//Total elapsed game time
 	
 	public static int MouseX = 0;
 	public static int MouseY = 0;
@@ -267,6 +267,22 @@ public abstract class GameEngine {
 	
 	public static int getPixelSize() {
 		return pixelSize;
+	}
+	
+	public Pair<Float> wrapCoordinates(float x, float y) {
+		Pair<Float> pair = new Pair<>(x, y);
+
+		if (pair.first < 0.0f)
+			pair.first = pair.first + screenWidth();
+		else if (pair.first >= screenWidth())
+			pair.first = pair.first - screenWidth();
+		
+		if (pair.last < 0.0f)
+			pair.last = pair.last + screenHeight();
+		else if (pair.last >= screenHeight())
+			pair.last = pair.last - screenHeight();
+
+		return pair;
 	}
 	
 	private boolean doConstruct(int width, int height, int pixelSize) {

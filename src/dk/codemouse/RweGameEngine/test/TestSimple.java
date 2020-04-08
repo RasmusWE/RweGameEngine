@@ -25,10 +25,15 @@ public class TestSimple extends GameEngine{
 	public void onDraw(Graphics2D g) {
 		clearScreen(g, Color.cyan);
 		
-		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
-		drawCircle(g, x, y, 10, Color.BLACK);
-
-		drawString(g, "Hello world!", 1, 20, Color.BLACK);
+		drawString(g, "Hello world!", 20, 20, Color.BLACK);
+		
+		for (int i = 0; i < 10; i++) {
+			Color drawColor = Color.RED;
+			if (i % 2 == 0)
+				drawColor = Color.BLUE;
+			
+			draw(g, 0, i, drawColor);
+		}
 		
 		draw(g, 0, 0, Color.RED);
 		draw(g, 0, 1, Color.BLUE);
@@ -41,6 +46,13 @@ public class TestSimple extends GameEngine{
 		draw(g, 0, 8, Color.RED);
 		draw(g, 0, 9, Color.BLUE);
 		draw(g, 0, 10, Color.RED);
+		
+		drawTriangle(g, 120, 20, 75, 40, 110, 110, Color.WHITE);
+		
+		fillTriangle(g, 40, 60, 60, 30, 75, 70, Color.WHITE);
+		
+		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
+		drawCircle(g, x, y, 10, Color.BLACK);
 	}
 
 	@Override
