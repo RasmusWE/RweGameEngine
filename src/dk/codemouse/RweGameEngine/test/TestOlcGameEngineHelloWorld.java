@@ -24,8 +24,6 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 
 	@Override
 	public void onDraw(Graphics2D g) {
-		useAntiAliasing(true);
-		
 		//Clear screen
 		clearScreen(g, Color.black);
 		
