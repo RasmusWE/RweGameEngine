@@ -4,12 +4,13 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-
+import java.util.ArrayList;
 /**
  * 
  * Many of these drawing functions related to drawing with increased pixel size are kindly borrowed 
@@ -507,6 +508,52 @@ public class GameGraphics {
 		}
 	}
 	
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, Color color) {
+		drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, color);
+	}
+	
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, Color color) {
+		//First part borrowed from OLC: https://www.youtube.com/watch?v=QgDR8LrRZhk&t=1767s
+		
+		//pair.first  = x
+		//pair.last = y
+		
+		//Create translated model vector of coordinate pairs
+		int verts = modelCoordinates.size();
+		ArrayList<Pair<Float>> transformedCoordinates = new ArrayList<>();
+		for (Pair<Float> p : modelCoordinates) {
+			transformedCoordinates.add(new Pair<Float>(p.first, p.last));
+		}		
+		
+		//Rotate
+		for (int i = 0; i < verts; i++) {
+			transformedCoordinates.get(i).first = (float) (modelCoordinates.get(i).first * Math.cos(angle) - modelCoordinates.get(i).last * Math.sin(angle));
+			transformedCoordinates.get(i).last  = (float) (modelCoordinates.get(i).first * Math.sin(angle) + modelCoordinates.get(i).last * Math.cos(angle));
+		}
+		
+		//Scale
+		for (int i = 0; i < verts; i++) {
+			transformedCoordinates.get(i).first *= scale;
+			transformedCoordinates.get(i).last  *= scale;
+		}
+		
+		//Translate
+		for (int i = 0; i < verts; i++) {
+			transformedCoordinates.get(i).first += x;
+			transformedCoordinates.get(i).last  += y;
+		}
+		
+		//Draw closed polygon
+		if (useAntiAliasing()) {
+			drawWireFrameModelA(g, transformedCoordinates, x, y, Color.WHITE);
+		} else {
+			for (int i = 0; i < verts + 1; i++) {
+				int j = (i + 1);
+				drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), Color.WHITE);
+			}
+		}
+	}
+	
 	public void setFont(Font font) {
 		this.font = font;
 		this.font = font.deriveFont((float) font.getSize() * GameEngine.getPixelSize());
@@ -722,6 +769,29 @@ public class GameGraphics {
 	    TriangleShape triangleShape = new TriangleShape(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), new Point2D.Double(x3, y3));
 	    
 	    g.fill(triangleShape);
+	}
+	
+	public void drawWireFrameModelA(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, Color color) {
+		g.setColor(color);
+	    
+		int ps = GameEngine.getPixelSize();
+		
+		int[] xPoly = new int[modelCoordinates.size()];
+		int[] yPoly = new int[modelCoordinates.size()];
+		int idx = 0;
+		for (Pair<Float> mc : modelCoordinates) {
+			xPoly[idx] = Math.round(mc.first * ps);
+			yPoly[idx] = Math.round(mc.last * ps);
+			idx++;
+		}
+		
+		Stroke oldStroke = g.getStroke();
+		g.setStroke(new BasicStroke(ps));
+		
+		Polygon polygon = new Polygon(xPoly, yPoly, xPoly.length);
+		g.drawPolygon(polygon);
+	    
+		g.setStroke(oldStroke);
 	}
 	
 	private int findNearestDivisible(int number1, int number2, int to) {

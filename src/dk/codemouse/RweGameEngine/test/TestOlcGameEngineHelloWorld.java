@@ -3,15 +3,24 @@ package dk.codemouse.RweGameEngine.test;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import dk.codemouse.RweGameEngine.GameEngine;
+import dk.codemouse.RweGameEngine.Pair;
 
 public class TestOlcGameEngineHelloWorld extends GameEngine{
+	
+	ArrayList<Pair<Float>> modelRect = new ArrayList<>();
 	
 	@Override
 	public void onCreate() {
 //		useAntiAliasing(true);
 //		frame.setResizable(true);
+		
+		modelRect.add(new Pair<Float>(0.0f, 0.0f));
+		modelRect.add(new Pair<Float>(5.0f, 0.0f));
+		modelRect.add(new Pair<Float>(5.0f, 5.0f));
+		modelRect.add(new Pair<Float>(0.0f, 5.0f));
 	}
 
 	@Override
@@ -33,13 +42,13 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 				draw(g, x, y, new Color(random.nextInt(255) + 1, random.nextInt(255) + 1, random.nextInt(255) + 1));	
 			}
 		
-		for (int x = 0; x < screenWidth(); x++)
-			for (int y = 0; y < screenHeight(); y++) {	
-				if ((x + y) % 2 == 0)
-					draw(g, x, y, Color.DARK_GRAY);	
-				else
-					draw(g, x, y, Color.BLACK);	
-			}
+//		for (int x = 0; x < screenWidth(); x++)
+//			for (int y = 0; y < screenHeight(); y++) {	
+//				if ((x + y) % 2 == 0)
+//					draw(g, x, y, Color.DARK_GRAY);	
+//				else
+//					draw(g, x, y, Color.BLACK);	
+//			}
 		
 		drawLine(g, 90, 5, 65, 30, Color.WHITE);
 		
@@ -58,7 +67,9 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 		fillRect(g, 1, 62, 10, 10, Color.WHITE);
 		
 		setFontSize(8);
-		drawString(g, "Hello world", 30, 10, Color.white);
+		drawString(g, "Hello world", 30, 10, Color.WHITE);
+		
+		drawPolygon(g, modelRect, 90, 20, -5.0f, 2.0f, Color.WHITE);
 	}
 	
 	@Override

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.SwingUtilities;
@@ -40,7 +41,7 @@ import javax.swing.SwingUtilities;
  * frame.setResizable(false);
  * 
  * @author Rasmus Wehlast Engelbrecht
- * @version 1.3
+ * @version 1.4
  * 
  */
 
@@ -257,6 +258,14 @@ public abstract class GameEngine {
 		gameGraphics.drawString(g, string, x, y, color);
 	}
 	
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, Color color) {
+		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, color);
+	}
+	
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, Color color) {
+		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, scale, color);
+	}
+	
 	public void setFont(Font font) {
 		gameGraphics.setFont(font);
 	}
@@ -269,7 +278,7 @@ public abstract class GameEngine {
 		return pixelSize;
 	}
 	
-	public Pair<Float> wrapCoordinates(float x, float y) {
+	public Pair<Float> screenWrapCoordinates(float x, float y) {
 		Pair<Float> pair = new Pair<>(x, y);
 
 		if (pair.first < 0.0f)
