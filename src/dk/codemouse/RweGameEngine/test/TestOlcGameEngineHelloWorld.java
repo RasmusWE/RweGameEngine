@@ -10,7 +10,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(false);
+		useAntiAliasing(true);
 //		frame.setResizable(true);
 	}
 
@@ -24,6 +24,8 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 
 	@Override
 	public void onDraw(Graphics2D g) {
+		useAntiAliasing(true);
+		
 		//Clear screen
 		clearScreen(g, Color.black);
 		

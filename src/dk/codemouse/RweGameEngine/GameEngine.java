@@ -221,39 +221,39 @@ public abstract class GameEngine {
 		gameGraphics.clearScreen(g, color);
 	}
 	
-	public void draw(Graphics2D g, int x, int y, Color color) {
+	public void draw(Graphics2D g, float x, float y, Color color) {
 		gameGraphics.draw(g, x, y, color);
 	}
 	
-	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
+	public void drawLine(Graphics2D g, float x1, float y1, float x2, float y2, Color color) {
 		gameGraphics.drawLine(g, x1, y1, x2, y2, color);
 	}
 	
-	public void drawTriangle(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
+	public void drawTriangle(Graphics2D g, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 		gameGraphics.drawTriangle(g, x1, y1, x2, y2, x3, y3, color);
 	}
 	
-	public void fillTriangle(Graphics2D g, int x1, int y1, int x2, int y2, int x3, int y3, Color color) {
+	public void fillTriangle(Graphics2D g, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 		gameGraphics.fillTriangle(g, x1, y1, x2, y2, x3, y3, color);
 	}
 	
-	public void drawCircle(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
+	public void drawCircle(Graphics2D g, float xCenter, float yCenter, float radius, Color color) {
 		gameGraphics.drawCircle(g, xCenter, yCenter, radius, color);
 	}
 	
-	public void fillCircle(Graphics2D g, int xCenter, int yCenter, int radius, Color color) {
+	public void fillCircle(Graphics2D g, float xCenter, float yCenter, float radius, Color color) {
 		gameGraphics.fillCircle(g, xCenter, yCenter, radius, color);
 	}
 	
-	public void drawRect(Graphics2D g, int x, int y, int w, int h, Color color) {
+	public void drawRect(Graphics2D g, float x, float y, int w, int h, Color color) {
 		gameGraphics.drawRect(g, x, y, w, h, color);
 	}
 	
-	public void fillRect(Graphics2D g, int x, int y, int w, int h, Color color) {
+	public void fillRect(Graphics2D g, float x, float y, int w, int h, Color color) {
 		gameGraphics.fillRect(g, x, y, w, h, color);
 	}
 	
-	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
+	public void drawString(Graphics2D g, String string, float x, float y, Color color) {
 		gameGraphics.drawString(g, string, x, y, color);
 	}
 	
@@ -261,7 +261,7 @@ public abstract class GameEngine {
 		gameGraphics.setFont(font);
 	}
 	
-	public void setFontSize(float size) {
+	public void setFontSize(int size) {
 		gameGraphics.setFontSize(size);
 	}
 	
