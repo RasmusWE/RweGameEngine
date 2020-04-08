@@ -225,7 +225,7 @@ public abstract class GameEngine {
 		gameGraphics.draw(g, x, y, color);
 	}
 	
-	public void drawLine(Graphics2D g, float x1, float y1, float x2, float y2, Color color) {
+	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {
 		gameGraphics.drawLine(g, x1, y1, x2, y2, color);
 	}
 	

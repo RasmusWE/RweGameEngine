@@ -10,7 +10,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(true);
+//		useAntiAliasing(true);
 //		frame.setResizable(true);
 	}
 
@@ -21,7 +21,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 			tryStop();
 		}
 	}
-
+	
 	@Override
 	public void onDraw(Graphics2D g) {
 		//Clear screen
@@ -33,13 +33,13 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 				draw(g, x, y, new Color(random.nextInt(255) + 1, random.nextInt(255) + 1, random.nextInt(255) + 1));	
 			}
 		
-//		for (int x = 0; x < screenWidth(); x++)
-//			for (int y = 0; y < screenHeight(); y++) {	
-//				if ((x + y) % 2 == 0)
-//					draw(g, x, y, Color.DARK_GRAY);	
-//				else
-//					draw(g, x, y, Color.BLACK);	
-//			}
+		for (int x = 0; x < screenWidth(); x++)
+			for (int y = 0; y < screenHeight(); y++) {	
+				if ((x + y) % 2 == 0)
+					draw(g, x, y, Color.DARK_GRAY);	
+				else
+					draw(g, x, y, Color.BLACK);	
+			}
 		
 		drawLine(g, 90, 5, 65, 30, Color.WHITE);
 		

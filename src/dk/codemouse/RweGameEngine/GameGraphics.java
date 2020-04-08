@@ -73,8 +73,8 @@ public class GameGraphics {
 		g.fillRect((int) x, (int) y, GameEngine.getPixelSize(), GameEngine.getPixelSize());
 	}
 	
-	public void drawLine(Graphics2D g, float x1, float y1, float x2, float y2, Color color) {		
-		float x, y, dx, dy, dx1, dy1, px, py, xe, ye;
+	public void drawLine(Graphics2D g, int x1, int y1, int x2, int y2, Color color) {		
+		int x, y, dx, dy, dx1, dy1, px, py, xe, ye;
 		
 		dx = x2 - x1; 
 		if (dx == 0) {
@@ -145,89 +145,101 @@ public class GameGraphics {
 		if (useAntiAliasing) {
 			drawTriangleA(g, x1, y1, x2, y2, x3, y3, color);
 		} else {
-			drawLine(g, x1, y1, x2, y2, color);
-			drawLine(g, x2, y2, x3, y3, color);
-			drawLine(g, x3, y3, x1, y1, color);	
+			int ix1 = (int) x1;
+			int ix2 = (int) x2;
+			int ix3 = (int) x3;
+			int iy1 = (int) y1;
+			int iy2 = (int) y2;
+			int iy3 = (int) y3;
+			drawLine(g, ix1, iy1, ix2, iy2, color);
+			drawLine(g, ix2, iy2, ix3, iy3, color);
+			drawLine(g, ix3, iy3, ix1, iy1, color);	
 		}
 	}
 	
 	public void fillTriangle(Graphics2D g, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 		if (useAntiAliasing) {
 			fillTriangleA(g, x1, y1, x2, y2, x3, y3, color);
-		} else {		
+		} else {	
+			int ix1 = (int) x1;
+			int ix2 = (int) x2;
+			int ix3 = (int) x3;
+			int iy1 = (int) y1;
+			int iy2 = (int) y2;
+			int iy3 = (int) y3;
+			
 			// copied nearly verbatim from olcConsoleGameEngine
 			// SWAP and drawline autos replaced with swap and drawHorizLine above
 			// primitives cannot be passed by reference in Java, so swap was modified to return a custom "Pair" class (below)
 			// also, Java does not have goto so I used an if statement and loop labels with "break label;"
-			float t1x, t2x, y, minX, maxX, t1xp, t2xp;
+			int t1x, t2x, y, minX, maxX, t1xp, t2xp;
 			boolean changed1 = false;
 			boolean changed2 = false;
 			int signX1, signX2, dx1, dy1, dx2, dy2;
 			int e1, e2;
 	
 			// sort vertices
-			Pair<Integer> swapPairI;
-			Pair<Float> swapPairF;
-			if (y1 > y2) {
-				swapPairF = Pair.swap(y1, y2);
-				y1 = swapPairF.first;
-				y2 = swapPairF.last;
-				swapPairF = Pair.swap(x1, x2);
-				x1 = swapPairF.first;
-				x2 = swapPairF.last;
+			Pair<Integer> swapPair;
+			if (iy1 > iy2) {
+				swapPair = Pair.swap(iy1, iy2);
+				iy1 = swapPair.first;
+				iy2 = swapPair.last;
+				swapPair = Pair.swap(ix1, ix2);
+				ix1 = swapPair.first;
+				ix2 = swapPair.last;
 			}
-			if (y1 > y3) {
-				swapPairF = Pair.swap(y1, y3);
-				y1 = swapPairF.first;
-				y3 = swapPairF.last;
-				swapPairF = Pair.swap(x1, x3);
-				x1 = swapPairF.first;
-				x3 = swapPairF.last;
+			if (iy1 > iy3) {
+				swapPair = Pair.swap(iy1, iy3);
+				iy1 = swapPair.first;
+				iy3 = swapPair.last;
+				swapPair = Pair.swap(ix1, ix3);
+				ix1 = swapPair.first;
+				ix3 = swapPair.last;
 			}
-			if (y2 > y3) {
-				swapPairF = Pair.swap(y2, y3);
-				y2 = swapPairF.first;
-				y3 = swapPairF.last;
-				swapPairF = Pair.swap(x2, x3);
-				x2 = swapPairF.first;
-				x3 = swapPairF.last;
+			if (iy2 > iy3) {
+				swapPair = Pair.swap(iy2, iy3);
+				iy2 = swapPair.first;
+				iy3 = swapPair.last;
+				swapPair = Pair.swap(ix2, ix3);
+				ix2 = swapPair.first;
+				ix3 = swapPair.last;
 			}
 	
-			t1x = t2x = x1; // starting points
-			y = y1;
-			dx1 = (int)(x2 - x1);
+			t1x = t2x = ix1; // starting points
+			y = iy1;
+			dx1 = (int)(ix2 - ix1);
 			if (dx1 < 0) {
 				dx1 = -dx1;
 				signX1 = -1;
 			} else {
 				signX1 = 1;
 			}
-			dy1 = (int)(y2 - y1);
+			dy1 = (int)(iy2 - iy1);
 	
-			dx2 = (int)(x3 - x1);
+			dx2 = (int)(ix3 - ix1);
 			if (dx2 < 0) {
 				dx2 = - dx2;
 				signX2 = -1;
 			} else {
 				signX2 = 1;
 			}
-			dy2 = (int)(y3 - y1);
+			dy2 = (int)(iy3 - iy1);
 	
 			if (dy1 > dx1) {
-				swapPairI = Pair.swap(dx1, dy1);
-				dx1 = swapPairI.first;
-				dy1 = swapPairI.last;
+				swapPair = Pair.swap(dx1, dy1);
+				dx1 = swapPair.first;
+				dy1 = swapPair.last;
 				changed1 = true;
 			}
 			if (dy2 > dx2) {
-				swapPairI = Pair.swap(dx2, dy2);
-				dx2 = swapPairI.first;
-				dy2 = swapPairI.last;
+				swapPair = Pair.swap(dx2, dy2);
+				dx2 = swapPair.first;
+				dy2 = swapPair.last;
 				changed2 = true;
 			}
 	
 			e2 = (int)(dx2 >> 1);
-			if (y1 != y2) {
+			if (iy1 != iy2) {
 				e1 = (int)(dx1 >> 1);
 	
 				for (float i = 0; i < dx1;) {
@@ -303,26 +315,26 @@ public class GameGraphics {
 						}
 						t2x += t2xp;
 						y += 1;
-						if (y == y2) {
+						if (y == iy2) {
 							break;
 						}
 				}
 			}
 			// second half
-			dx1 = (int)(x3 - x2);
+			dx1 = (int)(ix3 - ix2);
 			if (dx1 < 0) {
 				dx1 = -dx1;
 				signX1 = -1;
 			} else {
 				signX1 = 1;
 			}
-			dy1 = (int)(y3 - y2);
-			t1x = x2;
+			dy1 = (int)(iy3 - iy2);
+			t1x = ix2;
 	
 			if (dy1 > dx1) {
-				swapPairI = Pair.swap(dy1, dx1);
-				dy1 = swapPairI.first;
-				dx1 = swapPairI.last;
+				swapPair = Pair.swap(dy1, dx1);
+				dy1 = swapPair.first;
+				dx1 = swapPair.last;
 				changed1 = true;
 			} else {
 				changed1 = false;
@@ -404,7 +416,7 @@ public class GameGraphics {
 					}
 					t2x += t2xp;
 					y += 1;
-					if (y > y3) {
+					if (y > iy3) {
 						return;
 					}
 			}
@@ -443,15 +455,15 @@ public class GameGraphics {
 			fillCircleA(g, xCenter, yCenter, radius, color);
 		} else {
 			// copied verbatim from olcConsoleGameEngine, with the drawline auto replaced with drawHorizLine() (above)
-			float x = 0;
+			int x = 0;
 			float y = radius;
 			float p = 3 - 2 * radius;
 
 			while (y >= x) {
-				drawHorizLine(g, xCenter - x, xCenter + x, yCenter - y, color);
-				drawHorizLine(g, xCenter - y, xCenter + y, yCenter - x, color);
-				drawHorizLine(g, xCenter - x, xCenter + x, yCenter + y, color);
-				drawHorizLine(g, xCenter - y, xCenter + y, yCenter + x, color);
+				drawHorizLine(g, (int) (xCenter - x), (int) (xCenter + x), (int) (yCenter - y), color);
+				drawHorizLine(g, (int) (xCenter - y), (int) (xCenter + y), (int) (yCenter - x), color);
+				drawHorizLine(g, (int) (xCenter - x), (int) (xCenter + x), (int) (yCenter + y), color);
+				drawHorizLine(g, (int) (xCenter - y), (int) (xCenter + y), (int) (yCenter + x), color);
 				if (p < 0) {
 					p += 4 * x++ + 6;
 				} else {
@@ -471,10 +483,10 @@ public class GameGraphics {
 			g.setRenderingHints(rh);	
 		}
 		
-		drawLine(g, x, y, x + w, y, color);
-		drawLine(g, x + w, y, x + w, y + h, color);
-		drawLine(g, x + w, y + h, x, y + h, color);
-		drawLine(g, x, y + h, x, y, color);
+		drawLine(g, (int) x, (int) y, (int) x + w, (int) y, color);
+		drawLine(g, (int) x + w, (int) y, (int) x + w, (int) y + h, color);
+		drawLine(g, (int) x + w, (int) y + h, (int) x, (int) y + h, color);
+		drawLine(g, (int) x, (int) y + h, (int) x, (int) y, color);
 			
 		if (useAntiAliasing)
 			g.setRenderingHints(oldrh);
@@ -489,7 +501,7 @@ public class GameGraphics {
 	
 			float yIncr = y;
 			while (yIncr <= y2) {
-				drawLine(g, x, yIncr, x2, yIncr, color);
+				drawLine(g, (int) x, (int) yIncr, (int) x2, (int) yIncr, color);
 				yIncr += 1;
 			}
 		}
@@ -524,7 +536,7 @@ public class GameGraphics {
 		}
 	}
 	
-	private void drawHorizLine(Graphics2D g, float startX, float endX, float y, Color color) {
+	private void drawHorizLine(Graphics2D g, int startX, int endX, int y, Color color) {
 		RenderingHints oldrh = null;
 		if (useAntiAliasing) {
 			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -548,7 +560,7 @@ public class GameGraphics {
 			g.setRenderingHints(oldrh);	
 	}
 
-	private void drawVertLine(Graphics2D g, float x, float startY, float endY, Color color) {
+	private void drawVertLine(Graphics2D g, int x, int startY, int endY, Color color) {
 		RenderingHints oldrh = null;
 		if (useAntiAliasing) {
 			RenderingHints rh = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -670,6 +682,13 @@ public class GameGraphics {
 		x3 *= ps;
 		y3 *= ps;
 		
+		x1 += ps / 2;
+		x2 += ps / 2;
+		x3 += ps / 2;
+		y1 += ps / 2;
+		y2 += ps / 2;
+		y3 += ps / 2;
+		
 		Stroke oldStroke = g.getStroke();
 		g.setStroke(new BasicStroke(ps));
 		
@@ -682,6 +701,8 @@ public class GameGraphics {
 	private void fillTriangleA(Graphics2D g, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
 		g.setColor(color);
 		
+		drawTriangleA(g, x1, y1, x2, y2, x3, y3, color);
+		
 		int ps = GameEngine.getPixelSize();
 		
 		x1 *= ps;
@@ -691,7 +712,15 @@ public class GameGraphics {
 		x3 *= ps;
 		y3 *= ps;
 		
+		x1 += ps / 2;
+		x2 += ps / 2;
+		x3 += ps / 2;
+		y1 += ps / 2;
+		y2 += ps / 2;
+		y3 += ps / 2;
+		
 	    TriangleShape triangleShape = new TriangleShape(new Point2D.Double(x1, y1), new Point2D.Double(x2, y2), new Point2D.Double(x3, y3));
+	    
 	    g.fill(triangleShape);
 	}
 	
