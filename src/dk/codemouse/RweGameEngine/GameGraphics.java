@@ -545,11 +545,11 @@ public class GameGraphics {
 		
 		//Draw closed polygon
 		if (useAntiAliasing()) {
-			drawWireFrameModelA(g, transformedCoordinates, x, y, Color.WHITE);
+			drawWireFrameModelA(g, transformedCoordinates, x, y, color);
 		} else {
 			for (int i = 0; i < verts + 1; i++) {
 				int j = (i + 1);
-				engine.drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), Color.WHITE);
+				engine.drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), color);
 			}
 		}
 	}
@@ -563,7 +563,7 @@ public class GameGraphics {
 		this.font = font.deriveFont(size * GameEngine.getPixelSize());
 	}
 	
-	public void drawString(Graphics2D g, String string, float x, float y, Color color) {
+	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
 		x = (x * GameEngine.getPixelSize()) - (GameEngine.getPixelSize() + 1);
 		y = (y * GameEngine.getPixelSize()) - (GameEngine.getPixelSize() + 1);
 		

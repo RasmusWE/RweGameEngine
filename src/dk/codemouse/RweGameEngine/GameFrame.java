@@ -79,6 +79,7 @@ public class GameFrame extends JFrame {
 	
 	public void onUserDraw(Graphics2D g) {
 		engine.onDraw(g);
+		engine.onDrawScene(g);
 	}
 
 	public void display() {

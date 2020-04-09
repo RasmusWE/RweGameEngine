@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 import javax.swing.SwingUtilities;
@@ -72,6 +73,9 @@ public abstract class GameEngine {
 	private MouseMotionListener customMouseMotionListener;
 	
 	private boolean constructed = false, fitScreenToPixel = true;
+	
+	private HashMap<String, GameScene> gameScenes = new HashMap<>();
+	private String currScene = "";
 
 	public abstract void onCreate();
 	
@@ -254,7 +258,7 @@ public abstract class GameEngine {
 		gameGraphics.fillRect(g, x, y, w, h, color);
 	}
 	
-	public void drawString(Graphics2D g, String string, float x, float y, Color color) {
+	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
 		gameGraphics.drawString(g, string, x, y, color);
 	}
 	
@@ -292,6 +296,69 @@ public abstract class GameEngine {
 			pair.last = pair.last - screenHeight();
 
 		return pair;
+	}
+	
+	public void addGameScene(GameScene scene) {
+		if (gameScenes.containsKey(scene.title)) {
+			System.err.println("Game scene " + scene.title + " already added!");
+			return;
+		}
+		
+		gameScenes.put(scene.title, scene);
+	}
+	
+	public void setScene(String title) {
+		if (currScene.equals("")) {
+			GameScene scene = gameScenes.get(title);
+			if (scene != null) {
+				currScene = scene.title;	
+				scene.onDisplay();
+			} else {
+				System.err.println("Game scene " + title + " does not exist!");
+			}
+		} else {
+			if (!currScene.equals(title)) {
+				GameScene oldScene = gameScenes.get(currScene);
+				oldScene.onClear();
+				
+				GameScene newScene = gameScenes.get(title);
+				if (newScene != null) {
+					currScene = newScene.title;	
+					newScene.onDisplay();
+				} else {
+					System.err.println("Game scene " + title + " does not exist!");
+				}
+			}
+		}
+	}
+	
+	public void clearScene() {
+		if (!currScene.equals("")) {
+			GameScene scene = gameScenes.get(currScene);
+			if (scene != null) {
+				scene.onClear();
+			}
+		}
+		
+		currScene = "";
+	}
+	
+	public void onDrawScene(Graphics2D g) {
+		if (!currScene.equals("")) {
+			GameScene scene = gameScenes.get(currScene);
+			if (scene != null) {
+				scene.onDraw(g);
+			}
+		}
+	}
+	
+	public void onUpdateScene(double elapsedTime) {
+		if (!currScene.equals("")) {
+			GameScene scene = gameScenes.get(currScene);
+			if (scene != null) {
+				scene.onUpdate(elapsedTime);
+			}
+		}
 	}
 	
 	private boolean doConstruct(int width, int height, int pixelSize) {

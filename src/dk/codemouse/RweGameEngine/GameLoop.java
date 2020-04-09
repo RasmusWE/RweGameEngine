@@ -93,6 +93,8 @@ public class GameLoop {
 	
 	private void update(double elapsedTime) {
 		engine.onUpdate(elapsedTime);
+		engine.onUpdateScene(elapsedTime);
+		
 		engine.sendFpsToFrame(GameEngine.CURRENT_FPS);
 	}
 	
