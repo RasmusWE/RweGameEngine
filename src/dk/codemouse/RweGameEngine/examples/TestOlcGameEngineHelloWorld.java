@@ -1,4 +1,4 @@
-package dk.codemouse.RweGameEngine.test;
+package dk.codemouse.RweGameEngine.examples;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

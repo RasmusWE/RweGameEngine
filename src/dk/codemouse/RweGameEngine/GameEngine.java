@@ -34,15 +34,17 @@ import javax.swing.SwingUtilities;
  * Access mouse position with GameEngine.MouseX, GameEngine.MouseY.
  * Easily add key controls like so:
  * 
- *		if (keyReleased(KeyEvent.VK_ESCAPE)) {      if (keyHeld(KeyEvent.VK_RIGHT)) {      	if (keyPressed(KeyEvent.VK_ENTER)) 
- *			tryStop();									x++;									System.Out.println("ENTER");
- *		}											}										}
- * 
+ * if (keyPressed(KeyEvent.VK_ENTER))
+ * if (keyHeld(KeyEvent.VK_RIGHT))
+ * if (keyReleased(KeyEvent.VK_ESCAPE))
+
  * You can also access JFrame and JPanel screen directly. For example you can change frame properties like so: 
- * frame.setResizable(false);
+ * frame.setResizable(true);
+ * 
+ * Use GameScene to easily add different scenes/stages to the game.
  * 
  * @author Rasmus Wehlast Engelbrecht
- * @version 1.4
+ * @version 1.5
  * 
  */
 
@@ -190,10 +192,6 @@ public abstract class GameEngine {
 		return false;
 	}
 	
-	public void render() {
-		frame.repaint();
-	}
-	
 	public void addMouseListener(MouseListener mouseListener) {
 		this.customMouseListener = mouseListener;
 		
@@ -208,6 +206,10 @@ public abstract class GameEngine {
 		if (constructed) {
 			frame.addMouseMotionListener(this.customMouseMotionListener);
 		}
+	}
+	
+	public void render() {
+		frame.repaint();
 	}
 	
 	public void sendFpsToFrame(int fps) {
