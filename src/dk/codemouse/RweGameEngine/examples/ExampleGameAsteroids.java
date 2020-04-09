@@ -11,9 +11,6 @@ import dk.codemouse.RweGameEngine.Pair;
 public class ExampleGameAsteroids extends GameEngine{
 	
 	final boolean ANTI_ALIASING = false;
-	final int PIXEL_SIZE 		= 3;
-	final int WIDTH      		= 160;
-	final int HEIGHT     		= 100;
 	
 	private ArrayList<SpaceObject> asteroids;
 	private ArrayList<SpaceObject> bullets;
