@@ -69,7 +69,7 @@ public class GameLoop {
 				deltaU--;
 			}
 
-			if (deltaF >= 1) {
+			if (deltaF >= 1 || GameEngine.TFPS == -1) {
 				render();
 				
 				frames++;
