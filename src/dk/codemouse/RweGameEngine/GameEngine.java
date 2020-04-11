@@ -44,7 +44,7 @@ import javax.swing.SwingUtilities;
  * Use GameScene to easily add different scenes/stages to the game.
  * 
  * @author Rasmus Wehlast Engelbrecht
- * @version 1.5
+ * @version 1.6
  * 
  */
 
@@ -280,6 +280,22 @@ public abstract class GameEngine {
 		gameGraphics.setFontSize(size);
 	}
 	
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double rotation) {
+		gameGraphics.drawSprite(g, sprite, x, y, scale, rotation);
+	}
+	
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double rotation) {
+		gameGraphics.drawPartialSprite(g, sprite, x, y, ox, oy, width, height, scale, rotation);
+	}
+	
+	public GameSprite createSprite(String filePath) {
+		return new GameSprite(filePath);
+	}
+	
+	public GameSprite createSprite(GameSprite sprite) {
+		return new GameSprite(sprite);
+	}
+	
 	public static int getPixelSize() {
 		return pixelSize;
 	}
@@ -392,6 +408,7 @@ public abstract class GameEngine {
 			
 			constructed = true;
 		} catch (Exception e) {
+			System.err.println("GameEngine failed to construct!");
 			e.printStackTrace();
 			return false;
 		}

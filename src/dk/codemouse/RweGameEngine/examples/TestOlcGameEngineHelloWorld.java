@@ -13,8 +13,8 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	ArrayList<Pair<Float>> modelRect = new ArrayList<>();
 	
 	@Override
-	public void onCreate() {
-//		useAntiAliasing(true);
+	public void onCreate() {		
+		useAntiAliasing(true);
 //		frame.setResizable(true);
 		
 		modelRect.add(new Pair<Float>(0.0f, 0.0f));

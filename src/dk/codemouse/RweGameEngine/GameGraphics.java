@@ -13,12 +13,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 /**
  * 
- * Many of these drawing functions related to drawing with increased pixel size are kindly borrowed 
+ * Some of these drawing functions related to drawing with increased pixel size are kindly borrowed 
  * from Barista's java implementation of OlcPixelGameEngine and the OlcPixelGameEngine itself
- * 
- * Though the functions that implements anti aliasing are my own implementation.
- * 
- * TODO: Sprite handling
  * 
  * @author Rasmus
  *
@@ -792,6 +788,46 @@ public class GameGraphics {
 		g.drawPolygon(polygon);
 	    
 		g.setStroke(oldStroke);
+	}
+	
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double rotation) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (rotation > 0)
+			sprite = sprite.rotate(rotation);
+		
+		if (scale > 1)
+			for (int i = 0; i < sprite.getWidth(); i++)
+				for (int j = 0; j < sprite.getHeight(); j++)
+					for (int is = 0; is < scale; is++)
+						for (int js = 0; js < scale; js++)
+							draw(g, x + Math.round(i * scale) + is, y + Math.round(j * scale) + js, sprite.getPixel(i, j));		
+		
+		else 
+			for (int i = 0; i < sprite.getWidth(); i++)
+				for (int j = 0; j < sprite.getHeight(); j++)
+					draw(g, x + i, y + j, sprite.getPixel(i, j));	
+	}
+	
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double rotation) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (rotation > 0)
+			sprite = sprite.rotate(rotation);
+			
+		if (scale > 1)
+			for (int i = 0; i < width; i++)
+				for (int j = 0; j < height; j++)
+					for (int is = 0; is < scale; is++)
+						for (int js = 0; js < scale; js++)
+							draw(g, x + Math.round(i * scale) + is, y + Math.round(j * scale) + js, sprite.getPixel(i + ox, j + oy));
+
+		else
+			for (int i = 0; i < width; i++)
+				for (int j = 0; j < height; j++)
+					draw(g, x + i, y + j, sprite.getPixel(i + ox, j + oy));
 	}
 	
 	private int findNearestDivisible(int number1, int number2, int to) {

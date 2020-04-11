@@ -6,6 +6,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import dk.codemouse.RweGameEngine.GameEngine;
+import dk.codemouse.RweGameEngine.GameSprite;
 import dk.codemouse.RweGameEngine.Pair;
 
 public class TestSimple extends GameEngine{
@@ -16,9 +17,12 @@ public class TestSimple extends GameEngine{
 	int mY = 0;
 	
 	ArrayList<Pair<Float>> modelRect = new ArrayList<>();
-	float scale = 1.0f;
+	float scale = 1.0f, scale2 = 1.0f;
 	float angle = 1.0f;
 	boolean upscaling = true;
+	
+	GameSprite sprite, sprite2, sprite3;
+	double sprite3Angle = 1;
 	
 	@Override
 	public void onCreate() {
@@ -31,10 +35,15 @@ public class TestSimple extends GameEngine{
 		modelRect.add(new Pair<Float>(5.0f, 0.0f));
 		modelRect.add(new Pair<Float>(5.0f, 5.0f));
 		modelRect.add(new Pair<Float>(0.0f, 5.0f));
+		
+		//Load sprite
+		sprite  = createSprite("examples/test.png");
+		sprite2 = createSprite(sprite);
+		sprite3 = createSprite(sprite);
 	}
 
 	@Override
-	public void onUpdate(double elapsedTime) {
+	public void onUpdate(double elapsedTime) {	
 		if (keyHeld(KeyEvent.VK_RIGHT))
 			x += 1;
 		
@@ -67,10 +76,17 @@ public class TestSimple extends GameEngine{
 		if (!upscaling && scale <= 1.0f)
 			upscaling = true;
 		
-		if (upscaling) 
-			scale += 0.03f;
-		else
+		if (upscaling) {
+			scale  += 0.03f;
+			if (scale2 < 1.8)
+				scale2 += 0.01f;
+		} else {
 			scale -= 0.03f;
+			if (scale2 > 1)
+				scale2 -= 0.01f;
+		}
+		
+		sprite3Angle += 0.3;
 		
 		//Exit
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
@@ -111,7 +127,13 @@ public class TestSimple extends GameEngine{
 		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
 		drawCircle(g, x, y, 10, Color.BLACK);
 		
-		drawPolygon(g, modelRect, 23, 60, angle, scale, Color.BLACK);
+		drawPolygon(g, modelRect, 23, 35, angle, scale, Color.BLACK);
+		
+		drawSprite(g, sprite, 60, 80, 1, 0);
+		drawPartialSprite(g, sprite, 140, 80, 20, 0, 8, 10, 3, 0);
+
+		drawSprite(g, sprite3, 5, 65, scale2, sprite3Angle);
+		drawPartialSprite(g, sprite2, 140, 65, 0, 0, 20, 10, 1, 70);
 	}
 	
 	public boolean onDestroy() {
@@ -120,7 +142,7 @@ public class TestSimple extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(180, 120, 5)) {
+		if (game.construct(180, 150, 5)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");
