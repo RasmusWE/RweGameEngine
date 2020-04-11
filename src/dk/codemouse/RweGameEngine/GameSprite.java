@@ -59,8 +59,11 @@ public class GameSprite {
 		return new Color(image.getRGB(x, y), true);
 	}
 	
-	public GameSprite rotate(double angleInDegrees) {
-        double rads = Math.toRadians(angleInDegrees);
+	public GameSprite rotate(double angle, boolean degrees) {
+		double rads = angle;
+		if (degrees)
+			rads = Math.toRadians(angle);
+		
         double sin = Math.abs(Math.sin(rads)), cos = Math.abs(Math.cos(rads));
         int w = getWidth();
         int h = getHeight();

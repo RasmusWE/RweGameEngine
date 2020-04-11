@@ -280,12 +280,20 @@ public abstract class GameEngine {
 		gameGraphics.setFontSize(size);
 	}
 	
-	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double rotation) {
-		gameGraphics.drawSprite(g, sprite, x, y, scale, rotation);
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double angleByDegrees) {
+		gameGraphics.drawSprite(g, sprite, x, y, scale, angleByDegrees);
 	}
 	
-	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double rotation) {
-		gameGraphics.drawPartialSprite(g, sprite, x, y, ox, oy, width, height, scale, rotation);
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double angleByDegrees) {
+		gameGraphics.drawPartialSprite(g, sprite, x, y, ox, oy, width, height, scale, angleByDegrees);
+	}
+	
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, float angle) {
+		gameGraphics.drawSprite(g, sprite, x, y, scale, angle);
+	}
+	
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, float angle) {
+		gameGraphics.drawPartialSprite(g, sprite, x, y, ox, oy, width, height, scale, angle);
 	}
 	
 	public GameSprite createSprite(String filePath) {

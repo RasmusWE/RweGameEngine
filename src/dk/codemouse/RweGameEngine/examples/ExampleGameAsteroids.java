@@ -252,7 +252,7 @@ public class ExampleGameAsteroids extends GameEngine{
 			
 			//Draw player
 			drawPolygon(g, modelShip, player.x, player.y, player.angle, scale, Color.WHITE);
-			
+	
 			//Draw score
 			setFontSize(6);
 			drawString(g, "Level: " + level, 2, 10 * scale, Color.WHITE);

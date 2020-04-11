@@ -550,13 +550,44 @@ public class GameGraphics {
 		}
 	}
 	
-	public void setFont(Font font) {
-		this.font = font;
-		this.font = font.deriveFont((float) font.getSize() * GameEngine.getPixelSize());
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, float angle) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (angle > 0)
+			sprite = sprite.rotate(angle, false);
+		
+		drawS(g, sprite, x, y, scale);
 	}
 	
-	public void setFontSize(float size) {
-		this.font = font.deriveFont(size * GameEngine.getPixelSize());
+	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double angleByDegrees) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (angleByDegrees > 0)
+			sprite = sprite.rotate(angleByDegrees, true);
+		
+		drawS(g, sprite, x, y, scale);	
+	}
+	
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, float angle) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (angle > 0)
+			sprite = sprite.rotate(angle, false);
+		
+		drawPS(g, sprite, x, y, ox, oy, width, height, scale);
+	}
+	
+	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double angleByDegrees) {
+		if (!sprite.isLoaded())
+			return;
+		
+		if (angleByDegrees > 0)
+			sprite = sprite.rotate(angleByDegrees, true);
+			
+		drawPS(g, sprite, x, y, ox, oy, width, height, scale);
 	}
 	
 	public void drawString(Graphics2D g, String string, int x, int y, Color color) {
@@ -577,6 +608,15 @@ public class GameGraphics {
 			g.drawString(string, x, y);
 			g.setRenderingHints(oldrh);
 		}
+	}
+	
+	public void setFont(Font font) {
+		this.font = font;
+		this.font = font.deriveFont((float) font.getSize() * GameEngine.getPixelSize());
+	}
+	
+	public void setFontSize(float size) {
+		this.font = font.deriveFont(size * GameEngine.getPixelSize());
 	}
 	
 	private void drawHorizLine(Graphics2D g, int startX, int endX, int y, Color color) {
@@ -767,7 +807,7 @@ public class GameGraphics {
 	    g.fill(triangleShape);
 	}
 	
-	public void drawWireFrameModelA(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, Color color) {
+	private void drawWireFrameModelA(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, Color color) {
 		g.setColor(color);
 	    
 		int ps = GameEngine.getPixelSize();
@@ -790,13 +830,7 @@ public class GameGraphics {
 		g.setStroke(oldStroke);
 	}
 	
-	public void drawSprite(Graphics2D g, GameSprite sprite, int x, int y, double scale, double rotation) {
-		if (!sprite.isLoaded())
-			return;
-		
-		if (rotation > 0)
-			sprite = sprite.rotate(rotation);
-		
+	private void drawS(Graphics2D g, GameSprite sprite, int x, int y, double scale) {
 		if (scale > 1)
 			for (int i = 0; i < sprite.getWidth(); i++)
 				for (int j = 0; j < sprite.getHeight(); j++)
@@ -810,13 +844,7 @@ public class GameGraphics {
 					draw(g, x + i, y + j, sprite.getPixel(i, j));	
 	}
 	
-	public void drawPartialSprite(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale, double rotation) {
-		if (!sprite.isLoaded())
-			return;
-		
-		if (rotation > 0)
-			sprite = sprite.rotate(rotation);
-			
+	private void drawPS(Graphics2D g, GameSprite sprite, int x, int y, int ox, int oy, int width, int height, double scale) {
 		if (scale > 1)
 			for (int i = 0; i < width; i++)
 				for (int j = 0; j < height; j++)
