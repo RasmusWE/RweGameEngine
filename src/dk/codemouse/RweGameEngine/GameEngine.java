@@ -52,7 +52,7 @@ public abstract class GameEngine {
 	
 	protected String title = "RweGameEngine";
 	
-	protected GameFrame frame;
+	protected static GameFrame frame;
 	
 	public static int TFPS 				= 60; 	//Target FPS (FPS CAP)
     public static int TUPS 				= 60; 	//Target Updates - lowering or increasing this will make the engine update logic more or less often
@@ -86,6 +86,18 @@ public abstract class GameEngine {
 	public abstract void onDraw(Graphics2D g);
 	
 	public abstract boolean onDestroy(); 
+	
+	public static void setDefaultCursor() {
+		frame.setDefaultCursor();
+	}
+
+	public static void setHandCursor() {
+		frame.setHandCursor();
+	}
+
+	public static void setWaitCursor() {
+		frame.setWaitCursor();
+	}
 	
 	public int screenWidth() {
 		return frame.frameDimension.width / GameEngine.pixelSize;

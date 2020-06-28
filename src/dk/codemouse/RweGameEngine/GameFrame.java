@@ -1,5 +1,6 @@
 package dk.codemouse.RweGameEngine;
 
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Graphics2D;
@@ -26,6 +27,11 @@ public class GameFrame extends JFrame {
 	private String frameTitle;
 	
 	private GameEngine engine;
+
+	private final Cursor[] cursors = new Cursor[] { new Cursor(Cursor.HAND_CURSOR),
+			new Cursor(Cursor.WAIT_CURSOR), new Cursor(Cursor.DEFAULT_CURSOR) };
+	
+	private Cursor CURRENT_CURSOR = cursors[cursors.length - 1];
 	
 	public GameFrame(GameEngine engine, String title, int width, int height, boolean fullScreen, boolean fitScreenToPixel) {
 		super(title);
@@ -80,6 +86,8 @@ public class GameFrame extends JFrame {
 	public void onUserDraw(Graphics2D g) {
 		engine.onDraw(g);
 		engine.onDrawScene(g);
+		
+		setCursor(CURRENT_CURSOR);
 	}
 
 	public void display() {
@@ -105,6 +113,18 @@ public class GameFrame extends JFrame {
 	public void resizeWindow(int width, int height) {
 		screen.resizeWindow(width, height);
 		this.pack();
+	}
+	
+	public void setDefaultCursor() {
+		CURRENT_CURSOR = cursors[2];
+	}
+
+	public void setHandCursor() {
+		CURRENT_CURSOR = cursors[0];
+	}
+
+	public void setWaitCursor() {
+		CURRENT_CURSOR = cursors[1];
 	}
 	
 	private void prepareGameScreen() {

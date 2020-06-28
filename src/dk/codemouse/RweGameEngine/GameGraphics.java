@@ -37,7 +37,7 @@ public class GameGraphics {
 	public int getGPixelSize() {
 		int ps = GameEngine.getPixelSize();
 		if (ps > 1 && fullScreen) {
-			return findNearestDivisible(engine.frame.frameDimension.width, engine.frame.frameDimension.height, ps);
+			return findNearestDivisible(GameEngine.frame.frameDimension.width, GameEngine.frame.frameDimension.height, ps);
 		}
 
 		return ps;
@@ -53,17 +53,17 @@ public class GameGraphics {
 	
 	public void clearScreen(Graphics2D g, Color color) {
 		g.setColor(color);
-		g.fillRect(0, 0, engine.frame.frameDimension.width, engine.frame.frameDimension.height);
+		g.fillRect(0, 0, GameEngine.frame.frameDimension.width, GameEngine.frame.frameDimension.height);
 	}
 	
 	public void draw(Graphics2D g, float x, float y, Color color) {		
 		x *= GameEngine.getPixelSize();
 		y *= GameEngine.getPixelSize();
 
-		if (x > engine.frame.frameDimension.width || x < 0)
+		if (x > GameEngine.frame.frameDimension.width || x < 0)
 			return;
 		
-		if (y > engine.frame.frameDimension.height|| y < 0)
+		if (y > GameEngine.frame.frameDimension.height|| y < 0)
 			return;
 
 		g.setColor(color);

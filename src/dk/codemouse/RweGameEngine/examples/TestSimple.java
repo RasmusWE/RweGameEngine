@@ -142,7 +142,7 @@ public class TestSimple extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(180, 150, 5)) {
+		if (game.construct(180, 150, 4)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");
