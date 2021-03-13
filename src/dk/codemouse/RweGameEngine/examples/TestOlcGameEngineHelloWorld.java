@@ -69,7 +69,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 		setFontSize(8);
 		drawString(g, "Hello world", 30, 10, Color.WHITE);
 		
-		drawPolygon(g, modelRect, 90, 20, -5.0f, 2.0f, Color.WHITE);
+		drawPolygon(g, modelRect, 90, 20, -5.0f, 2.0f, false, Color.WHITE);
 	}
 	
 	@Override
@@ -79,7 +79,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestOlcGameEngineHelloWorld test = new TestOlcGameEngineHelloWorld();
-		if (test.construct("Pixel size example", 100, 75, 8)) {
+		if (test.construct("Pixel size example", 100, 75, 13)) {
 			test.start();
 		} else {
 			System.err.println("Could not construct engine!");
