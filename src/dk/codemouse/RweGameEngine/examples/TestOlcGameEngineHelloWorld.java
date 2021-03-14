@@ -74,7 +74,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	@Override
 	public boolean onDestroy() {
-		return false;
+		return true;
 	}
 	
 	public static void main(String[] args) {

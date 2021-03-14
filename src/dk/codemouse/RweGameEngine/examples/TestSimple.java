@@ -137,7 +137,7 @@ public class TestSimple extends GameEngine{
 	}
 	
 	public boolean onDestroy() {
-		return false;
+		return true;
 	}
 	
 	public static void main(String[] args) {

@@ -262,7 +262,7 @@ public class TestCircles extends GameEngine {
 	
 	@Override
 	public boolean onDestroy() {
-		return false;
+		return true;
 	}
 	
 	private boolean doCirclesOverlap(float x1, float y1, float r1, float x2, float y2, float r2) {
