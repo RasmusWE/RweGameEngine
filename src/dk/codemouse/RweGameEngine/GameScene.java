@@ -7,17 +7,11 @@ public abstract class GameScene {
 	public String title;	
 	protected GameEngine engine;
 	
-	public GameScene(GameEngine engine, String title, boolean addToEngine) {
-		this.engine = engine;
-		this.title  = title;
-		
-		if (addToEngine)
-			this.engine.addGameScene(this);
-	}
-	
 	public GameScene(GameEngine engine, String title) {
 		this.engine = engine;
 		this.title  = title;
+
+		this.engine.addGameScene(this);
 	}
 	
 	public abstract void onDisplay();

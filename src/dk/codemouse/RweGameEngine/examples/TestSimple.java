@@ -127,7 +127,7 @@ public class TestSimple extends GameEngine{
 		drawRect(g, x - 5, y - 5, 10, 10, Color.BLACK);
 		drawCircle(g, x, y, 10, Color.BLACK);
 		
-		drawPolygon(g, modelRect, 23, 35, angle, scale, Color.BLACK);
+		drawPolygon(g, modelRect, 23, 35, angle, scale, false, Color.BLACK);
 		
 		drawSprite(g, sprite, 60, 80, 1, 0);
 		drawPartialSprite(g, sprite, 140, 80, 20, 0, 8, 10, 3, 0);

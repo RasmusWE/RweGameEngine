@@ -4,6 +4,7 @@ package dk.codemouse.RweGameEngine;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import javax.swing.SwingUtilities;
  * if (keyPressed(KeyEvent.VK_ENTER))
  * if (keyHeld(KeyEvent.VK_RIGHT))
  * if (keyReleased(KeyEvent.VK_ESCAPE))
-
+ *
  * You can also access JFrame and JPanel screen directly. For example you can change frame properties like so: 
  * frame.setResizable(true);
  * 
@@ -195,10 +196,11 @@ public abstract class GameEngine {
 	}
 	
 	public boolean tryStop() {
-		if (!onDestroy()) {
+		if (onDestroy()) {
 			frame.setVisible(false);
 			frame.dispose();
 			loop.stop();
+			return true;
 		}
 		
 		return false;
@@ -240,6 +242,20 @@ public abstract class GameEngine {
 		gameGraphics.clearScreen(g, color);
 	}
 	
+	public Rectangle getFontBounds(Graphics2D g) {
+		return gameGraphics.getFontBounds(g);
+	}
+	
+	public int getFontWidth(Graphics2D g) {
+		Rectangle fb = getFontBounds(g);
+		return fb.width / GameEngine.pixelSize;
+	}
+	
+	public int getFontHeight(Graphics2D g) {
+		Rectangle fb = getFontBounds(g);
+		return fb.height / GameEngine.pixelSize;
+	}
+	
 	public void draw(Graphics2D g, float x, float y, Color color) {
 		gameGraphics.draw(g, x, y, color);
 	}
@@ -276,12 +292,12 @@ public abstract class GameEngine {
 		gameGraphics.drawString(g, string, x, y, color);
 	}
 	
-	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, Color color) {
-		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, color);
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, boolean fill, Color color) {
+		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, fill, color);
 	}
 	
-	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, Color color) {
-		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, scale, color);
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, boolean fill, Color color) {
+		gameGraphics.drawPolygon(g, modelCoordinates, x, y, angle, scale, fill, color);
 	}
 	
 	public void setFont(Font font) {

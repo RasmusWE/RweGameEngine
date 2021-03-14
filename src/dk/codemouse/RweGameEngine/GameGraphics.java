@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
@@ -24,6 +25,8 @@ public class GameGraphics {
 	
 	private GameEngine engine;	
 	private Font font;
+	
+	private Rectangle fontBounds;
 	
 	private boolean useAntiAliasing = false, fullScreen = false;
 	
@@ -54,6 +57,17 @@ public class GameGraphics {
 	public void clearScreen(Graphics2D g, Color color) {
 		g.setColor(color);
 		g.fillRect(0, 0, GameEngine.frame.frameDimension.width, GameEngine.frame.frameDimension.height);
+	}
+	
+	public Rectangle getFontBounds(Graphics2D g) {
+		if (fontBounds != null)
+			return fontBounds;
+		
+		if (font == null)
+			return new Rectangle(0,0,0,0);
+		
+		fontBounds = font.getStringBounds("M", g.getFontRenderContext()).getBounds();
+		return fontBounds;
 	}
 	
 	public void draw(Graphics2D g, float x, float y, Color color) {		
@@ -504,11 +518,11 @@ public class GameGraphics {
 		}
 	}
 	
-	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, Color color) {
-		drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, color);
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, boolean fill, Color color) {
+		drawPolygon(g, modelCoordinates, x, y, angle, 1.0f, fill, color);
 	}
 	
-	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, Color color) {
+	public void drawPolygon(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, float angle, float scale, boolean fill, Color color) {
 		//First part borrowed from OLC: https://www.youtube.com/watch?v=QgDR8LrRZhk&t=1767s
 		
 		//pair.first  = x
@@ -541,8 +555,11 @@ public class GameGraphics {
 		
 		//Draw closed polygon
 		if (useAntiAliasing()) {
-			drawWireFrameModelA(g, transformedCoordinates, x, y, color);
+			drawWireFrameModelA(g, transformedCoordinates, x, y, fill, color);
 		} else {
+			if (fill)
+				System.err.println("drawPolygon: FILLMODE cannot be used with anti aliasing diabled!");
+			
 			for (int i = 0; i < verts + 1; i++) {
 				int j = (i + 1);
 				engine.drawLine(g, Math.round(transformedCoordinates.get(i % verts).first), Math.round(transformedCoordinates.get(i % verts).last), Math.round(transformedCoordinates.get(j % verts).first), Math.round(transformedCoordinates.get(j % verts).last), color);
@@ -807,7 +824,7 @@ public class GameGraphics {
 	    g.fill(triangleShape);
 	}
 	
-	private void drawWireFrameModelA(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, Color color) {
+	private void drawWireFrameModelA(Graphics2D g, ArrayList<Pair<Float>> modelCoordinates, float x, float y, boolean fill, Color color) {
 		g.setColor(color);
 	    
 		int ps = GameEngine.getPixelSize();
@@ -825,7 +842,10 @@ public class GameGraphics {
 		g.setStroke(new BasicStroke(ps));
 		
 		Polygon polygon = new Polygon(xPoly, yPoly, xPoly.length);
-		g.drawPolygon(polygon);
+		if (fill)
+			g.fillPolygon(polygon);
+		else
+			g.drawPolygon(polygon);
 	    
 		g.setStroke(oldStroke);
 	}

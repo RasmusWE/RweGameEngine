@@ -79,7 +79,7 @@ public class TestOlcGameEngineHelloWorld extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestOlcGameEngineHelloWorld test = new TestOlcGameEngineHelloWorld();
-		if (test.construct("Pixel size example", 100, 75, 13)) {
+		if (test.construct("Pixel size example", 100, 75, 8)) {
 			test.start();
 		} else {
 			System.err.println("Could not construct engine!");

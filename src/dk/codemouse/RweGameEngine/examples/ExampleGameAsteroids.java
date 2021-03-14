@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import dk.codemouse.RweGameEngine.GameEngine;
 import dk.codemouse.RweGameEngine.GameScene;
 import dk.codemouse.RweGameEngine.Pair;
@@ -21,7 +23,7 @@ public class ExampleGameAsteroids extends GameEngine{
 	private int scale, astVerts = 20, score = 0, level = 1;
 	private boolean playerDied = false, started = false, paused = false;
 	
-	private SpaceObject createAsteroid(float x, float y, float vx, float vy, int size, float angle) {
+	private SpaceObject createAsteroid(float x, float y, float vx, float vy, int size) {
 		SpaceObject asteroid = new SpaceObject();
 		asteroid.x 	= x;
 		asteroid.y 	= y;
@@ -54,7 +56,7 @@ public class ExampleGameAsteroids extends GameEngine{
 
 		//init asteroids
 		for (int i = 0; i < random.nextInt(2) + 2; i++) {
-			asteroids.add(createAsteroid(random.nextInt(screenWidth()), random.nextInt(screenHeight()), random.nextInt(20) - 10, random.nextInt(20) - 10, random.nextInt(16) + 8, 0.0f));
+			asteroids.add(createAsteroid(random.nextInt(screenWidth()), random.nextInt(screenHeight()), random.nextInt(20) - 10, random.nextInt(20) - 10, random.nextInt(16) + 8));
 		}
 
 		//init player
@@ -73,7 +75,7 @@ public class ExampleGameAsteroids extends GameEngine{
 	public void onCreate() {
 		useAntiAliasing(ANTI_ALIASING);
 		
-		new StartScene(this, "start", true);
+		new StartScene(this);
 
 		scale = (screenWidth() / 200);
 		if (scale <= 0)
@@ -140,7 +142,7 @@ public class ExampleGameAsteroids extends GameEngine{
 							SpaceObject asteroid = createAsteroid(a.x, a.y, 
 									(float) ((random.nextInt(10) + 10) * Math.sin(angle1)), 
 									(float) ((random.nextInt(10) + 10) * Math.cos(angle1)),
-									a.size / 2, 0.0f);
+									a.size / 2);
 
 							asteroid.size  += random.nextInt(3);
 							if (asteroid.size < 4)
@@ -151,7 +153,7 @@ public class ExampleGameAsteroids extends GameEngine{
 							asteroid = createAsteroid(a.x, a.y, 
 									(float) ((random.nextInt(10) + 10) * Math.sin(angle2)), 
 									(float) ((random.nextInt(10) + 10) * Math.cos(angle2)),
-									a.size / 2, 0.0f);
+									a.size / 2);
 
 							asteroid.size  += random.nextInt(3);
 							if (asteroid.size < 4)
@@ -239,7 +241,7 @@ public class ExampleGameAsteroids extends GameEngine{
 		if (started) {			
 			//Draw asteroids
 			for (SpaceObject a : asteroids) {
-				drawPolygon(g, a.model, a.x, a.y, a.angle, a.size * scale, Color.YELLOW);
+				drawPolygon(g, a.model, a.x, a.y, a.angle, a.size * scale, false, Color.YELLOW);
 			}
 			
 			//Draw bullets
@@ -251,7 +253,7 @@ public class ExampleGameAsteroids extends GameEngine{
 			}
 			
 			//Draw player
-			drawPolygon(g, modelShip, player.x, player.y, player.angle, scale, Color.WHITE);
+			drawPolygon(g, modelShip, player.x, player.y, player.angle, scale, ANTI_ALIASING, Color.WHITE);
 	
 			//Draw score
 			setFontSize(6);
@@ -262,7 +264,15 @@ public class ExampleGameAsteroids extends GameEngine{
 
 	@Override
 	public boolean onDestroy() {
-		return false;
+		setScene("start");
+		paused = true;
+		
+		if (JOptionPane.showConfirmDialog(GameEngine.frame, "Are you sure you want to end the game?") == JOptionPane.YES_OPTION) 
+			return true;
+		else {
+			clearScene();
+			return false;
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -301,8 +311,8 @@ public class ExampleGameAsteroids extends GameEngine{
 
 	private class StartScene extends GameScene {
 
-		public StartScene(GameEngine engine, String title, boolean addToEngine) {
-			super(engine, title, addToEngine);
+		public StartScene(GameEngine engine) {
+			super(engine, "start");
 			engine.setScene(title);
 		}
 		
