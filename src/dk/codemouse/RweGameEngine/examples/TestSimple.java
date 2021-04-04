@@ -26,7 +26,7 @@ public class TestSimple extends GameEngine{
 	
 	@Override
 	public void onCreate() {
-		useAntiAliasing(true);
+		useAntiAliasing(false);
 		frame.setResizable(true);
 		
 		//setFont(new Font("TimesRoman", Font.PLAIN, 20));
@@ -142,7 +142,7 @@ public class TestSimple extends GameEngine{
 	
 	public static void main(String[] args) {
 		TestSimple game = new TestSimple();
-		if (game.construct(180, 150, 4)) {
+		if (game.construct(200, 140, 4)) {
 			game.start();
 		} else {
 			System.err.println("Error occured during construction");

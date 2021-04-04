@@ -221,7 +221,7 @@ public class TestCircles extends GameEngine {
 		
 		//Exit
 		if (keyReleased(KeyEvent.VK_ESCAPE)) {
-			System.exit(0);
+			tryStop();
 		}
 
 	}
@@ -275,7 +275,7 @@ public class TestCircles extends GameEngine {
 
 	public static void main(String[] args) {
 		TestCircles circlesTest = new TestCircles();
-		if (circlesTest.construct("Circle Test - OLC", 170, 120, 5)) {
+		if (circlesTest.construct("Circle Test - OLC", 170, 120, 6)) {
 			circlesTest.start();
 		} else {
 			System.err.println("Error constructing engine");

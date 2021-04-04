@@ -247,7 +247,7 @@ public class ExampleGameAsteroids extends GameEngine{
 			//Draw bullets
 			for (SpaceObject b : bullets) {
 				if (scale > 1)
-					drawCircle(g, b.x, b.y, 5, Color.white);
+					drawCircle(g, b.x, b.y, 3, Color.white);
 				else
 					draw(g, b.x, b.y, Color.WHITE);
 			}

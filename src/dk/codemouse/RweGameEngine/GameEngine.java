@@ -18,8 +18,8 @@ import javax.swing.SwingUtilities;
  * Simple "Game engine" wrapper - Inspired from OneLoneCoders Console and Pixel GameEngines in C++.
  * 
  * Simply extend this class and implement the onCreate, onUpdate and onDraw to utilize the window and internal game loop.
- * Optionally use onDestroy to handle closing of application or potentially stop the application from closing by returning true.
- * (Default is false and application will close normally when user tries closing window or function tryStop() is called). 
+ * Optionally override method onDestroy to handle closing of application/window and potentially stop the application from closing by returning false.
+ * (Default is true and application will then close normally when user tries closing window or function tryStop() is called). 
  * 
  * You are encouraged to use the drawing functions specifically designed for this engine - But you can also use std. functions in Graphics2D.
  * Note that if you use the std. functions from Graphics2D changing of pixel size will have no effect.
@@ -43,6 +43,7 @@ import javax.swing.SwingUtilities;
  * frame.setResizable(true);
  * 
  * Use GameScene to easily add different scenes/stages to the game.
+ * See ExampleGameAsteroids for example on how to use
  * 
  * @author Rasmus Wehlast Engelbrecht
  * @version 1.6
@@ -86,7 +87,9 @@ public abstract class GameEngine {
 	
 	public abstract void onDraw(Graphics2D g);
 	
-	public abstract boolean onDestroy(); 
+	public boolean onDestroy() {
+		return true;
+	}
 	
 	public static void setDefaultCursor() {
 		frame.setDefaultCursor();
