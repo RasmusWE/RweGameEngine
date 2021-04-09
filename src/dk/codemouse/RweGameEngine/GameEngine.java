@@ -103,11 +103,11 @@ public abstract class GameEngine {
 		frame.setWaitCursor();
 	}
 	
-	public int screenWidth() {
+	public static int screenWidth() {
 		return frame.frameDimension.width / GameEngine.pixelSize;
 	}
 	
-	public int screenHeight() {
+	public static int screenHeight() {
 		return frame.frameDimension.height / GameEngine.pixelSize;
 	}
 	
